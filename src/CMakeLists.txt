@@ -11,9 +11,14 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(util)
 
-add_executable(librall main.cpp)
+# Find Qt (adjust version if needed)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
+qt_standard_project_setup() # enables AUTOMOC, AUTOUIC, etc
+
+add_executable(${PROJECT_NAME} main.cpp)
 
 target_link_libraries(librall util)
+target_link_libraries(${PROJECT_NAME} Qt6::Widgets)
 
 # needed?
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

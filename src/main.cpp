@@ -5,7 +5,13 @@
 #include "Timer.h"
 #include "SortAlgs.h"
 
-int main(int argc, char* argv[])
+#include <QApplication>
+#include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QWidget>
+
+void sortingAlgsTest()
 {
   Random::seedWithTime();
 
@@ -65,6 +71,26 @@ int main(int argc, char* argv[])
 
   std::cout << "SPEED TEST: Heap sort:\n";
   timer.printElapsedTimeSeconds();
+}
 
-  return 0;
+int main(int argc, char *argv[])
+{
+  QApplication app(argc, argv);
+  QWidget window;
+  window.setWindowTitle("Librall");
+
+  auto* vbox = new QVBoxLayout(&window);
+
+  auto* btnQuickSort = new QPushButton("Run sorting algorithms test", &window);
+  vbox->addWidget(btnQuickSort);
+  QObject::connect(btnQuickSort, &QPushButton::clicked, []()
+  {
+    sortingAlgsTest();
+  });
+
+  window.setLayout(vbox);
+  window.resize(400, 300);
+  window.show();
+
+  return app.exec();
 }
