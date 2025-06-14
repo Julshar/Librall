@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm> // swap
 #include <cstdlib>  // rand, srand
+#include <thread>
 
 /*
 *  INSERTION SORT
@@ -10,8 +11,7 @@
 
 void SortAlgs::insertionSort(std::vector<int>& arr)
 {
-  int n = arr.size();
-  for (int i = 1; i < n; i++)
+  for (int i = 1; i < arr.size(); i++)
   {
     int key = arr[i];
     int j = i - 1;
@@ -26,7 +26,6 @@ void SortAlgs::insertionSort(std::vector<int>& arr)
 
 void SortAlgs::insertionSort(int* arr, int size)
 {
-  // Implementation for array of integers
   for (int i = 1; i < size; i++)
   {
     int key = arr[i];
