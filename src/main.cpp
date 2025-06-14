@@ -4,6 +4,7 @@
 #include "Random.h"
 #include "Timer.h"
 #include "SortAlgs.h"
+#include "ParallelSortAlgs.h"
 
 #include <QApplication>
 #include <QLabel>
@@ -52,6 +53,7 @@ void sortingAlgsSpeedTest()
   std::vector<int> largeArrayCopy_2 = arr; // Copy for sorting
   std::vector<int> largeArrayCopy_3 = arr; // Copy for sorting
   std::vector<int> largeArrayCopy_4 = arr; // Copy for sorting
+  std::vector<int> largeArrayCopy_5 = arr; // Copy for sorting
 
   Timer timer;
 
@@ -72,6 +74,11 @@ void sortingAlgsSpeedTest()
 
   SortAlgs::heapSort(largeArrayCopy_4);
   std::cout << "SPEED TEST: Heap sort:\n";
+  timer.printElapsedTimeSeconds();
+  timer.reset();
+
+  ParallelSortAlgs::mergeSort(largeArrayCopy_5);
+  std::cout << "SPEED TEST: Parallel merge sort:\n";
   timer.printElapsedTimeSeconds();
 }
 

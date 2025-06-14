@@ -1,6 +1,7 @@
 add_library (util
   Random.cpp
   SortAlgs.cpp
+  ParallelSortAlgs.cpp
   Timer.cpp
   VectorUtil.cpp
 )
