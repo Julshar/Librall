@@ -45,10 +45,13 @@ void SortAlgs::insertionSort(int* arr, int size)
 
 void SortAlgs::merge(std::vector<int>& arr, int left, int mid, int right)
 {
-  int n1 = mid - left + 1, n2 = right - mid;
+  int n1 = mid - left + 1;
+  int n2 = right - mid;
   std::vector<int> L(arr.begin() + left, arr.begin() + mid + 1);
   std::vector<int> R(arr.begin() + mid + 1, arr.begin() + right + 1);
-  int i = 0, j = 0, k = left;
+  int i = 0;
+  int j = 0;
+  int k = left;
   while (i < n1 && j < n2)
   {
     arr[k++] = (L[i] <= R[j]) ? L[i++] : R[j++];
@@ -81,10 +84,13 @@ void SortAlgs::mergeSort(std::vector<int>& arr)
 
 void SortAlgs::merge(int* arr, int left, int mid, int right)
 {
-  int n1 = mid - left + 1, n2 = right - mid;
+  int n1 = mid - left + 1;
+  int n2 = right - mid;
   std::vector<int> L(arr + left, arr + mid + 1);
   std::vector<int> R(arr + mid + 1, arr + right + 1);
-  int i = 0, j = 0, k = left;
+  int i = 0;
+  int j = 0;
+  int k = left;
   while (i < n1 && j < n2)
   {
     arr[k++] = (L[i] <= R[j]) ? L[i++] : R[j++];
@@ -121,7 +127,8 @@ void SortAlgs::mergeSort(int* arr, int size)
 
 int SortAlgs::partition(std::vector<int>& arr, int low, int high)
 {
-  int pivot = arr[high], i = low - 1;
+  int pivot = arr[high];
+  int i = low - 1;
   for (int j = low; j < high; j++)
   {
     if (arr[j] < pivot) std::swap(arr[++i], arr[j]);
@@ -147,7 +154,8 @@ void SortAlgs::quickSort(std::vector<int>& arr)
 
 int SortAlgs::partition(int* arr, int low, int high)
 {
-  int pivot = arr[high], i = low - 1;
+  int pivot = arr[high];
+  int i = low - 1;
   for (int j = low; j < high; j++)
   {
     if (arr[j] < pivot) std::swap(arr[++i], arr[j]);
@@ -177,7 +185,9 @@ void SortAlgs::quickSort(int* arr, int size)
 
 void SortAlgs::heapify(std::vector<int>& arr, int n, int i)
 {
-  int largest = i, left = 2 * i + 1, right = 2 * i + 2;
+  int largest = i;
+  int left = 2 * i + 1;
+  int right = 2 * i + 2;
   if (left < n && arr[left] > arr[largest]) largest = left;
   if (right < n && arr[right] > arr[largest]) largest = right;
   if (largest != i)
@@ -203,7 +213,9 @@ void SortAlgs::heapSort(std::vector<int>& arr)
 
 void SortAlgs::heapify(int* arr, int n, int i)
 {
-  int largest = i, left = 2 * i + 1, right = 2 * i + 2;
+  int largest = i;
+  int left = 2 * i + 1;
+  int right = 2 * i + 2;
   if (left < n && arr[left] > arr[largest]) largest = left;
   if (right < n && arr[right] > arr[largest]) largest = right;
   if (largest != i)
