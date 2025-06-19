@@ -20,6 +20,10 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Build succeeded!"
+echo "Copying data files..."
+
+cp -r data build/data
+
 echo "Running the project..."
 
 ./build/librall

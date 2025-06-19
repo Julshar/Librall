@@ -12,6 +12,13 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <QMainWindow>
+#include <QTableView>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlTableModel>
+#include <QDebug>
+
 void sortingAlgsTest()
 {
   Random::seedWithTime();
@@ -88,6 +95,30 @@ void sortingAlgsSpeedTest()
   timer.printElapsedTimeSeconds();
 }
 
+int databaseTest()
+{
+  std::cout << "Hello database!\n";
+
+  QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+  db.setDatabaseName("example.db");  // Path to your SQLite DB file
+
+  if (!db.open()) {
+      qDebug() << "Error: " << db.lastError().text();
+      return -1;
+  }
+
+  QSqlTableModel *model = new QSqlTableModel;
+  model->setTable("your_table_name");  // Replace with your table
+  model->select(); // Load data
+
+  QTableView *view = new QTableView;
+  view->setModel(model);
+  view->resize(800, 600);
+  view->show();
+
+  return 0;
+}
+
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
@@ -108,6 +139,14 @@ int main(int argc, char *argv[])
   QObject::connect(btnSortSpeedTest, &QPushButton::clicked, []()
   {
     sortingAlgsSpeedTest();
+  });
+
+  auto* btnDatabaseTest = new QPushButton("Database operations test", &window);
+  vbox->addWidget(btnDatabaseTest);
+  QObject::connect(btnDatabaseTest, &QPushButton::clicked, []()
+  {
+    int res = databaseTest();
+    std::cout << "main.cpp: Database test resulted with: " << res << " status code.\n";
   });
 
   window.setLayout(vbox);
