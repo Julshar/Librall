@@ -26,6 +26,8 @@ cp -r data build/data
 
 echo "Running the project..."
 
-./build/librall
+cd build
+./librall
+cd ..
 
 exit 0

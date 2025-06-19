@@ -100,15 +100,16 @@ int databaseTest()
   std::cout << "Hello database!\n";
 
   QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-  db.setDatabaseName("example.db");  // Path to your SQLite DB file
+  db.setDatabaseName("data/world-db/world.sql");
 
-  if (!db.open()) {
-      qDebug() << "Error: " << db.lastError().text();
-      return -1;
+  if (!db.open())
+  {
+    qDebug() << "Error: " << db.lastError().text();
+    return -1;
   }
 
   QSqlTableModel *model = new QSqlTableModel;
-  model->setTable("your_table_name");  // Replace with your table
+  model->setTable("table_name");
   model->select(); // Load data
 
   QTableView *view = new QTableView;
