@@ -1,19 +1,23 @@
 #!/bin/bash         
 
+set -e  # Exit on any error
 echo "Building the project..."
 
-DIR="build"
+BUILD_DIR="build"
 
-if [ -d "$DIR" ]; then
+if [ -d "$BUILD_DIR" ]; then
     echo "Removing previous build..."
-    rm -rf "$DIR"/*
-    rm -rf "$DIR"/.[!.]* "$DIR"/..?* 2>/dev/null # Removes hidden files/directories
+    rm -rf "$BUILD_DIR"
 else
-    mkdir "$DIR"
+    mkdir "$BUILD_DIR"
 fi
 
-cmake -DCMAKE_BUILD_TYPE=Release -S src -B build
-cmake --build build
+echo "Running CMake..."
+cmake -DCMAKE_BUILD_TYPE=Release -S src -B "$BUILD_DIR"
+
+echo "Building..."
+cmake --build "$BUILD_DIR" -- -j$(nproc)
+# cmake --build BUILD_DIR
 if [ $? -ne 0 ]; then
     echo "Build failed!"
     exit 1
@@ -21,12 +25,10 @@ fi
 
 echo "Build succeeded!"
 echo "Copying data files..."
-
-cp -r data build/data
+cp -r data "$BUILD_DIR"/data
 
 echo "Running the project..."
-
-cd build
+cd "$BUILD_DIR"
 ./librall
 cd ..
 

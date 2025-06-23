@@ -1,13 +1,22 @@
+#pragma once
+
 #include <QMainWindow>
 
-class MainWindow : public QMainWindow
-{
+class QSplitter;
+class ButtonPanelArea;
+class ConsoleArea;
+
+class MainWindow : public QMainWindow {
   Q_OBJECT
 
 public:
   MainWindow(QWidget *parent = nullptr);
 
-  static void sortingAlgsTest();
-  static void sortingAlgsSpeedTest();
-  static int databaseTest();
+private:
+  void setupMenuBar();
+  void setupLayout();
+
+  QSplitter *mainSplitter;
+  ButtonPanelArea *buttonPanel;
+  ConsoleArea *console;
 };

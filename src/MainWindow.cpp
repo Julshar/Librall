@@ -1,154 +1,50 @@
 #include "MainWindow.h"
+#include "ButtonPanelArea.h"
+#include "ConsoleArea.h"
+#include "MainAreaSection.h"
 
-#include <iostream>
-
-#include <QPushButton>
+#include <QSplitter>
+#include <QMenuBar>
 #include <QVBoxLayout>
-
-#include "VectorUtil.h"
-#include "Random.h"
-#include "Timer.h"
-#include "SortAlgs.h"
-#include "ParallelSortAlgs.h"
-
-#include <QWidget>
-#include <QTableView>
-#include <QSqlDatabase>
-#include <QSqlError>
-#include <QSqlTableModel>
-#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
 {
+  setupMenuBar();
+  setupLayout();
+  setWindowTitle("Librall - Advanced GUI");
+  resize(1000, 700);
+}
+
+void MainWindow::setupMenuBar()
+{
+  QMenuBar *menuBar = new QMenuBar(this);
+
+  QMenu *fileMenu = menuBar->addMenu("File");
+  QMenu *optionsMenu = menuBar->addMenu("Options");
+  QMenu *helpMenu = menuBar->addMenu("Help");
+
+  setMenuBar(menuBar);
+}
+
+void MainWindow::setupLayout()
+{
+  mainSplitter = new QSplitter(Qt::Horizontal, this);
+  buttonPanel = new ButtonPanelArea;
+  console = new ConsoleArea;
+
+  buttonPanel->setMinimumWidth(150);
+  console->setMinimumWidth(400);
+
+  mainSplitter->addWidget(buttonPanel);
+  mainSplitter->addWidget(console);
+
+  mainSplitter->setStretchFactor(0, 1);
+  mainSplitter->setStretchFactor(1, 3);
+
   QWidget *central = new QWidget(this);
-  QVBoxLayout *vbox = new QVBoxLayout();
-
-  auto* btnSortTest = new QPushButton("Sorting algorithms test", central);
-  vbox->addWidget(btnSortTest);
-  QObject::connect(btnSortTest, &QPushButton::clicked, []()
-  {
-    sortingAlgsTest();
-  });
-
-  auto* btnSortSpeedTest = new QPushButton("Sorting algorithms speed test", central);
-  vbox->addWidget(btnSortSpeedTest);
-  QObject::connect(btnSortSpeedTest, &QPushButton::clicked, []()
-  {
-    sortingAlgsSpeedTest();
-  });
-
-  auto* btnDatabaseTest = new QPushButton("Database operations test", central);
-  vbox->addWidget(btnDatabaseTest);
-  QObject::connect(btnDatabaseTest, &QPushButton::clicked, []()
-  {
-    int res = databaseTest();
-    std::cout << "main.cpp: Database test resulted with: " << res << " status code.\n";
-  });
-
-  central->setLayout(vbox);
-  central->resize(600, 600);
+  QVBoxLayout *layout = new QVBoxLayout(central);
+  layout->addWidget(mainSplitter);
+  central->setLayout(layout);
   setCentralWidget(central);
-  setWindowTitle("Librall");
-}
-
-void MainWindow::sortingAlgsTest()
-{
-  Random::seedWithTime();
-
-  std::vector<int> arr = VectorUtil::generateRandomVector(40, 0, 100);
-
-  std::cout << "Unsorted array: ";
-  VectorUtil::printVector(arr);
-
-  std::vector<int> smallArrayCopy_1 = arr; // Copy for sorting
-  std::vector<int> smallArrayCopy_2 = arr; // Copy for sorting
-  std::vector<int> smallArrayCopy_3 = arr; // Copy for sorting
-  std::vector<int> smallArrayCopy_4 = arr; // Copy for sorting
-
-  SortAlgs::insertionSort(smallArrayCopy_1);
-  std::cout << "TEST: Sorted small array (insertion): ";
-  VectorUtil::printVector(smallArrayCopy_1);
-
-  SortAlgs::mergeSort(smallArrayCopy_2);
-  std::cout << "TEST: Sorted small array (merge):     ";
-  VectorUtil::printVector(smallArrayCopy_2);
-
-  SortAlgs::quickSort(smallArrayCopy_3);
-  std::cout << "TEST: Sorted small array (quick):     ";
-  VectorUtil::printVector(smallArrayCopy_3);
-
-  SortAlgs::heapSort(smallArrayCopy_4);
-  std::cout << "TEST: Sorted small array (heap):      ";
-  VectorUtil::printVector(smallArrayCopy_4);
-}
-
-void MainWindow::sortingAlgsSpeedTest()
-{
-  Random::seedWithTime();
-
-  std::vector<int> arr = VectorUtil::generateRandomVector(100000, 0, 100000);
-
-  std::vector<int> largeArrayCopy_1 = arr; // Copy for sorting
-  std::vector<int> largeArrayCopy_2 = arr; // Copy for sorting
-  std::vector<int> largeArrayCopy_3 = arr; // Copy for sorting
-  std::vector<int> largeArrayCopy_4 = arr; // Copy for sorting
-  std::vector<int> largeArrayCopy_5 = arr; // Copy for sorting
-  std::vector<int> largeArrayCopy_6 = arr; // Copy for sorting
-
-  Timer timer;
-
-  SortAlgs::insertionSort(largeArrayCopy_1);
-  std::cout << "SPEED TEST: Insertion sort:\n";
-  timer.printElapsedTimeSeconds();
-  timer.reset();
-
-  SortAlgs::mergeSort(largeArrayCopy_2);
-  std::cout << "SPEED TEST: Merge sort:\n";
-  timer.printElapsedTimeSeconds();
-  timer.reset();
-
-  SortAlgs::quickSort(largeArrayCopy_3);
-  std::cout << "SPEED TEST: Quick sort:\n";
-  timer.printElapsedTimeSeconds();
-  timer.reset();
-
-  SortAlgs::heapSort(largeArrayCopy_4);
-  std::cout << "SPEED TEST: Heap sort:\n";
-  timer.printElapsedTimeSeconds();
-  timer.reset();
-
-  ParallelSortAlgs::mergeSort(largeArrayCopy_5);
-  std::cout << "SPEED TEST: Parallel merge sort:\n";
-  timer.printElapsedTimeSeconds();
-  timer.reset();
-
-  ParallelSortAlgs::quickSort(largeArrayCopy_6);
-  std::cout << "SPEED TEST: Parallel quick sort:\n";
-  timer.printElapsedTimeSeconds();
-}
-
-int MainWindow::databaseTest()
-{
-  std::cout << "Hello database!\n";
-
-  QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-  db.setDatabaseName("data/world-db/world.sql");
-
-  if (!db.open())
-  {
-    qDebug() << "Error: " << db.lastError().text();
-    return -1;
-  }
-
-  QSqlTableModel *model = new QSqlTableModel;
-  model->setTable("table_name");
-  model->select(); // Load data
-
-  QTableView *view = new QTableView;
-  view->setModel(model);
-  view->resize(800, 600);
-  view->show();
-
-  return 0;
 }
