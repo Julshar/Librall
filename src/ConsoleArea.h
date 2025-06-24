@@ -13,6 +13,7 @@ class ConsoleArea : public QWidget {
 public:
   ConsoleArea(QWidget *parent = nullptr);
   void print(const QString &text);
+  void print(const std::string &text);
 
 private slots:
   void handleInput();

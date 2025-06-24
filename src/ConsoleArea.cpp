@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QTextEdit>
 #include <QLineEdit>
+#include <string>
 
 ConsoleArea::ConsoleArea(QWidget *parent)
   : QWidget(parent)
@@ -22,6 +23,11 @@ ConsoleArea::ConsoleArea(QWidget *parent)
 void ConsoleArea::print(const QString &text)
 {
   outputArea->append(text);
+}
+
+void ConsoleArea::print(const std::string &text)
+{
+  outputArea->append(QString::fromStdString(text));
 }
 
 void ConsoleArea::handleInput()

@@ -13,16 +13,17 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets Sql)
 qt_standard_project_setup() # enables AUTOMOC, AUTOUIC, etc
 
 add_executable(${PROJECT_NAME} 
-                main.cpp
-                MainWindow.cpp
-                ButtonPanelArea.cpp
-                ConsoleArea.cpp
-                MainAreaSection.cpp
+  main.cpp
+  MainWindow.cpp
+  ButtonPanelArea.cpp
+  ConsoleArea.cpp
+  MainAreaSection.cpp
+  Logger.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} 
-                util
-                logic
-                Qt6::Widgets
-                Qt6::Sql
+  util
+  logic
+  Qt6::Widgets
+  Qt6::Sql
 )

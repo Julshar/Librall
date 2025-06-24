@@ -2,6 +2,7 @@
 #include "ButtonPanelArea.h"
 #include "ConsoleArea.h"
 #include "MainAreaSection.h"
+#include "Logger.h"
 
 #include <QSplitter>
 #include <QMenuBar>
@@ -32,6 +33,8 @@ void MainWindow::setupLayout()
   mainSplitter = new QSplitter(Qt::Horizontal, this);
   buttonPanel = new ButtonPanelArea;
   console = new ConsoleArea;
+
+  Logger::attachConsole(console);
 
   buttonPanel->setMinimumWidth(150);
   console->setMinimumWidth(400);
