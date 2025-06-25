@@ -12,6 +12,39 @@
 #include <string>
 #include <QString>
 
+// Wrapper aliases - avoid using lambda functions but move logic to separate namespace
+namespace SortWrappers
+{
+  inline void insertionIntAsc(std::vector<int>& v) { SortAlgs::insertionSort<int>(v); }
+  inline void mergeIntAsc(std::vector<int>& v) { SortAlgs::mergeSort<int>(v); }
+  inline void quickIntAsc(std::vector<int>& v) { SortAlgs::quickSort<int>(v); }
+  inline void heapIntAsc(std::vector<int>& v) { SortAlgs::heapSort<int>(v); }
+}
+
+// anonymous namespace for file-local functions
+namespace 
+{
+  using SortFunc = std::function<void(std::vector<int>&)>;
+
+  void runAndLogSort(const std::string& name, SortFunc sorter, const std::vector<int>& original)
+  {
+    std::vector<int> arr = original;
+    Timer timer;
+    sorter(arr);
+    auto time = timer.elapsedTimeMicro();
+    Logger::log(name + ": ");
+    Logger::log(std::to_string(time) + " microseconds");
+  }
+
+  void runAndPrintSorted(const std::string& name, SortFunc sorter, const std::vector<int>& original)
+  {
+    std::vector<int> arr = original;
+    sorter(arr);
+    Logger::log(name + ": ");
+    VectorUtil::printVector(arr);
+  }
+}
+
 void SortAlgsComp::runFunctionalTest()
 {
   Random::seedWithTime();
@@ -19,24 +52,33 @@ void SortAlgsComp::runFunctionalTest()
   Logger::log("Unsorted array: ");
   VectorUtil::printVector(arr);
 
-  std::vector<int> c1 = arr, c2 = arr, c3 = arr, c4 = arr;
-  SortAlgs::insertionSort(c1); Logger::log("Insertion: "); VectorUtil::printVector(c1);
-  SortAlgs::mergeSort(c2);     Logger::log("Merge:     "); VectorUtil::printVector(c2);
-  SortAlgs::quickSort(c3);     Logger::log("Quick:     "); VectorUtil::printVector(c3);
-  SortAlgs::heapSort(c4);      Logger::log("Heap:      "); VectorUtil::printVector(c4);
+  // Both wrappers and lambdas can be used to perform the same task here.
+  // Lambdas are more flexible, but wrappers can be more readable and reusable.
+
+  // Using wrappers for ascending order
+  Logger::log("Ascending order: ");
+  runAndPrintSorted("Insertion Sort", SortWrappers::insertionIntAsc, arr);
+  runAndPrintSorted("Merge Sort", SortWrappers::mergeIntAsc, arr);
+  runAndPrintSorted("Quick Sort", SortWrappers::quickIntAsc, arr);
+  runAndPrintSorted("Heap Sort", SortWrappers::heapIntAsc, arr);
+
+  // Using lambdas for descending order
+  Logger::log("Descending order: ");
+  runAndPrintSorted("Insertion Sort", [](std::vector<int>& v) { SortAlgs::insertionSort<int>(v, std::greater<int>()); }, arr);
+  runAndPrintSorted("Merge Sort", [](std::vector<int>& v) { SortAlgs::mergeSort<int>(v, std::greater<int>()); }, arr);
+  runAndPrintSorted("Quick Sort", [](std::vector<int>& v) { SortAlgs::quickSort<int>(v, std::greater<int>()); }, arr);
+  runAndPrintSorted("Heap Sort", [](std::vector<int>& v) { SortAlgs::heapSort<int>(v, std::greater<int>()); }, arr);
 }
 
 void SortAlgsComp::runSpeedTest()
 {
   Random::seedWithTime();
   std::vector<int> arr = VectorUtil::generateRandomVector(100000, 0, 100000);
-  std::vector<int> c1 = arr, c2 = arr, c3 = arr, c4 = arr, c5 = arr, c6 = arr;
-  Timer timer;
 
-  SortAlgs::insertionSort(c1); Logger::log("Insertion: "); Logger::log(std::to_string(timer.elapsedTimeMicro()) + " microseconds"); timer.reset();
-  SortAlgs::mergeSort(c2);     Logger::log("Merge:     "); Logger::log(std::to_string(timer.elapsedTimeMicro()) + " microseconds"); timer.reset();
-  SortAlgs::quickSort(c3);     Logger::log("Quick:     "); Logger::log(std::to_string(timer.elapsedTimeMicro()) + " microseconds"); timer.reset();
-  SortAlgs::heapSort(c4);      Logger::log("Heap:      "); Logger::log(std::to_string(timer.elapsedTimeMicro()) + " microseconds"); timer.reset();
-  ParallelSortAlgs::mergeSort(c5); Logger::log("Parallel Merge: "); Logger::log(std::to_string(timer.elapsedTimeMicro()) + " microseconds"); timer.reset();
-  ParallelSortAlgs::quickSort(c6); Logger::log("Parallel Quick: "); Logger::log(std::to_string(timer.elapsedTimeMicro()) + " microseconds");
+  runAndLogSort("Insertion Sort", SortWrappers::insertionIntAsc, arr);
+  runAndLogSort("Merge Sort", SortWrappers::mergeIntAsc, arr);
+  runAndLogSort("Quick Sort: ", SortWrappers::quickIntAsc, arr);
+  runAndLogSort("Heap Sort", SortWrappers::heapIntAsc, arr);
+  runAndLogSort("Parallel Merge", ParallelSortAlgs::mergeSort,  arr);
+  runAndLogSort("Parallel Quick", ParallelSortAlgs::quickSort,  arr);
 }
