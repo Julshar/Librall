@@ -111,8 +111,9 @@ namespace SortAlgs
   template <typename T, typename Compare = std::less<T>>
   void heapSort(std::vector<T>& arr, Compare comp = Compare())
   {
-    auto compWrapper = [&](int i, int j) { return comp(arr[i], arr[j]); };
-    std::make_heap(arr.begin(), arr.end(), [&](const T& a, const T& b) { return comp(b, a); }); // max heap if default
-    std::sort_heap(arr.begin(), arr.end(), [&](const T& a, const T& b) { return comp(b, a); });
+    // The following commented line shows how to reverse the custom comparator
+    // auto reversedComp = [&](const T& a, const T& b) { return comp(b, a); };
+    std::make_heap(arr.begin(), arr.end(), comp);
+    std::sort_heap(arr.begin(), arr.end(), comp);
   }
 } // namespace SortAlgs
