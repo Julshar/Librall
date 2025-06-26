@@ -64,10 +64,10 @@ void SortAlgsComp::runFunctionalTest()
 
   // Using lambdas for descending order
   Logger::log("Descending order: ");
-  runAndPrintSorted("Insertion Sort", [](std::vector<int>& v) { SortAlgs::insertionSort<int>(v, std::greater<int>()); }, arr);
-  runAndPrintSorted("Merge Sort", [](std::vector<int>& v) { SortAlgs::mergeSort<int>(v, std::greater<int>()); }, arr);
-  runAndPrintSorted("Quick Sort", [](std::vector<int>& v) { SortAlgs::quickSort<int>(v, std::greater<int>()); }, arr);
-  runAndPrintSorted("Heap Sort", [](std::vector<int>& v) { SortAlgs::heapSort<int>(v, std::greater<int>()); }, arr);
+  runAndPrintSorted("Insertion Sort", [](std::vector<int>& v) { SortAlgs::insertionSort<int, std::greater<int>>(v); }, arr);
+  runAndPrintSorted("Merge Sort", [](std::vector<int>& v) { SortAlgs::mergeSort<int, std::greater<int>>(v); }, arr);
+  runAndPrintSorted("Quick Sort", [](std::vector<int>& v) { SortAlgs::quickSort<int, std::greater<int>>(v); }, arr);
+  runAndPrintSorted("Heap Sort", [](std::vector<int>& v) { SortAlgs::heapSort<int, std::greater<int>>(v); }, arr);
 }
 
 void SortAlgsComp::runSpeedTest()
