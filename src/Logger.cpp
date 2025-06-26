@@ -1,6 +1,8 @@
 #include "Logger.h"
 #include <iostream>
 
+#undef DEBUG
+
 void Logger::attachConsole(ConsoleArea* console)
 {
   s_console = console;
@@ -12,7 +14,10 @@ void Logger::log(const QString& msg)
   {
     s_console->print(msg);
   }
+
+  #ifdef DEBUG
   std::cout << msg.toStdString() << std::endl;
+  #endif
 }
 
 void Logger::logDebug(const QString& msg)
@@ -22,6 +27,7 @@ void Logger::logDebug(const QString& msg)
   {
     s_console->print(formatted);
   }
+
   std::cout << formatted.toStdString() << std::endl;
 }
 
@@ -32,6 +38,7 @@ void Logger::logError(const QString& msg)
   {
     s_console->print(formatted);
   }
+
   std::cerr << formatted.toStdString() << std::endl;
 }
 
