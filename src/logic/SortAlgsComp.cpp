@@ -24,8 +24,7 @@ namespace SortWrappers
 // anonymous namespace for file-local functions
 namespace 
 {
-  using SortFunc = std::function<void(std::vector<int>&)>;
-
+  template <typename SortFunc>
   void runAndLogSort(const std::string& name, SortFunc sorter, const std::vector<int>& original)
   {
     std::vector<int> arr = original;
@@ -36,6 +35,7 @@ namespace
     Logger::log(std::to_string(time) + " microseconds");
   }
 
+  template <typename SortFunc>
   void runAndPrintSorted(const std::string& name, SortFunc sorter, const std::vector<int>& original)
   {
     std::vector<int> arr = original;

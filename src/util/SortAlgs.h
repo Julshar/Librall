@@ -8,8 +8,8 @@ namespace SortAlgs
 {
   namespace Helpers
   {
-    template <typename T>
-    void merge(std::vector<T>& arr, int left, int mid, int right, const std::function<bool(const T&, const T&)>& comp)
+    template <typename T, typename Compare>
+    void merge(std::vector<T>& arr, int left, int mid, int right, Compare comp)
     {
       std::vector<T> leftVec(arr.begin() + left, arr.begin() + mid + 1);
       std::vector<T> rightVec(arr.begin() + mid + 1, arr.begin() + right + 1);
@@ -29,8 +29,8 @@ namespace SortAlgs
       }
     }
 
-    template <typename T>
-    void mergeSortRec(std::vector<T>& arr, int left, int right, const std::function<bool(const T&, const T&)>& comp)
+    template <typename T, typename Compare>
+    void mergeSortRec(std::vector<T>& arr, int left, int right, Compare comp)
     {
       if (left < right)
       {
@@ -41,8 +41,8 @@ namespace SortAlgs
       }
     }
 
-    template <typename T>
-    int partition(std::vector<T>& arr, int low, int high, const std::function<bool(const T&, const T&)>& comp)
+    template <typename T, typename Compare>
+    int partition(std::vector<T>& arr, int low, int high, Compare comp)
     {
       T pivot = arr[high];
       int i = low - 1;
@@ -57,8 +57,8 @@ namespace SortAlgs
       return i + 1;
     }
 
-    template <typename T>
-    void quickSortRec(std::vector<T>& arr, int low, int high, const std::function<bool(const T&, const T&)>& comp)
+    template <typename T, typename Compare>
+    void quickSortRec(std::vector<T>& arr, int low, int high, Compare comp)
     {
       if (low < high)
       {
@@ -72,8 +72,8 @@ namespace SortAlgs
 
 // ======================== INSERTION SORT ========================
 
-  template <typename T>
-  void insertionSort(std::vector<T>& arr, std::function<bool(const T&, const T&)> comp = std::less<T>())
+  template <typename T, typename Compare = std::less<T>>
+  void insertionSort(std::vector<T>& arr, Compare comp = Compare())
   {
     for (size_t i = 1; i < arr.size(); ++i)
     {
@@ -90,8 +90,8 @@ namespace SortAlgs
 
   // ======================== MERGE SORT ============================
 
-  template <typename T>
-  void mergeSort(std::vector<T>& arr, std::function<bool(const T&, const T&)> comp = std::less<T>())
+  template <typename T, typename Compare = std::less<T>>
+  void mergeSort(std::vector<T>& arr, Compare comp = Compare())
   {
     if (!arr.empty())
       Helpers::mergeSortRec(arr, 0, arr.size() - 1, comp);
@@ -99,8 +99,8 @@ namespace SortAlgs
 
   // ======================== QUICK SORT ============================
 
-  template <typename T>
-  void quickSort(std::vector<T>& arr, std::function<bool(const T&, const T&)> comp = std::less<T>())
+  template <typename T, typename Compare = std::less<T>>
+  void quickSort(std::vector<T>& arr, Compare comp = Compare())
   {
     if (!arr.empty())
       Helpers::quickSortRec(arr, 0, arr.size() - 1, comp);
@@ -108,12 +108,11 @@ namespace SortAlgs
 
   // ======================== HEAP SORT =============================
   
-  template <typename T>
-  void heapSort(std::vector<T>& arr, std::function<bool(const T&, const T&)> comp = std::less<T>())
+  template <typename T, typename Compare = std::less<T>>
+  void heapSort(std::vector<T>& arr, Compare comp = Compare())
   {
     auto compWrapper = [&](int i, int j) { return comp(arr[i], arr[j]); };
     std::make_heap(arr.begin(), arr.end(), [&](const T& a, const T& b) { return comp(b, a); }); // max heap if default
     std::sort_heap(arr.begin(), arr.end(), [&](const T& a, const T& b) { return comp(b, a); });
   }
-
 } // namespace SortAlgs
