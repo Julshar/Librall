@@ -12,7 +12,10 @@ void Logger::log(const QString& msg)
 {
   if (s_console)
   {
-    s_console->print(msg);
+    QMetaObject::invokeMethod(s_console, [msg]()
+    {
+      s_console->print(msg);
+    }, Qt::QueuedConnection);
   }
 
   #ifdef DEBUG
@@ -25,7 +28,10 @@ void Logger::logDebug(const QString& msg)
   QString formatted = "[DEBUG] " + msg;
   if (s_console)
   {
-    s_console->print(formatted);
+    QMetaObject::invokeMethod(s_console, [formatted]()
+    {
+      s_console->print(formatted);
+    }, Qt::QueuedConnection);
   }
 
   std::cout << formatted.toStdString() << std::endl;
@@ -36,7 +42,10 @@ void Logger::logError(const QString& msg)
   QString formatted = "ERROR! " + msg;
   if (s_console)
   {
-    s_console->print(formatted);
+    QMetaObject::invokeMethod(s_console, [formatted]()
+    {
+      s_console->print(formatted);
+    }, Qt::QueuedConnection);
   }
 
   std::cerr << formatted.toStdString() << std::endl;

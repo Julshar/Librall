@@ -3,6 +3,7 @@
 #include <iostream>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QtConcurrent/QtConcurrent>
 
 #include "SortAlgsComp.h"
 #include "DatabaseTest.h"
@@ -16,18 +17,28 @@ ButtonPanelArea::ButtonPanelArea(QWidget *parent)
   QPushButton *btnSortComp = new QPushButton("Compare Sort");
   QPushButton *btnDBTest = new QPushButton("Test DB");
 
-  connect(btnSortTest, &QPushButton::clicked, []() {
-  SortAlgsComp::runFunctionalTest();
-});
+  connect(btnSortTest, &QPushButton::clicked, []()
+  {
+    QtConcurrent::run([]()
+    {
+      SortAlgsComp comp;
+      comp.runFunctionalTest();
+    });
+  });
 
-connect(btnSortComp, &QPushButton::clicked, []() {
-  SortAlgsComp::runSpeedTest();
-});
+  connect(btnSortComp, &QPushButton::clicked, []()
+  {
+    QtConcurrent::run([]() 
+    {
+      SortAlgsComp comp;
+      comp.runSpeedTest();
+    });
+  });
 
-connect(btnDBTest, &QPushButton::clicked, []() {
+  connect(btnDBTest, &QPushButton::clicked, []() {
   int res = DatabaseTest::runTest();
   std::cout << "Database test returned: " << res << "\n";
-});
+  });
 
   layout->addWidget(btnSortTest);
   layout->addWidget(btnSortComp);

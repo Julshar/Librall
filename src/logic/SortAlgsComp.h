@@ -1,7 +1,8 @@
 #pragma once
 
-namespace SortAlgsComp
+class SortAlgsComp
 {
+public:
   void runFunctionalTest();  // small vector with printed outputs
   void runSpeedTest();       // large vector with timing results
-}
+};
