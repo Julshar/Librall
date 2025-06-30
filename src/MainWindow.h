@@ -16,7 +16,13 @@ private:
   void setupMenuBar();
   void setupLayout();
 
+  void formatData(const QByteArray &data, QString &formatted) const;
+
   QSplitter *mainSplitter;
   ButtonPanelArea *buttonPanel;
   ConsoleArea *console;
+
+private slots:
+  void chooseFile();
+  void reopenFile();
 };

@@ -80,3 +80,14 @@ void Logger::logError(const char* msg)
 {
   logError(QString::fromUtf8(msg));
 }
+
+void Logger::flush()
+{
+  if (s_console)
+  {
+    QMetaObject::invokeMethod(s_console, []()
+    {
+      s_console->flush();
+    }, Qt::QueuedConnection);
+  }
+}

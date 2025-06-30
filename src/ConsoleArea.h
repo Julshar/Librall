@@ -14,6 +14,7 @@ public:
   ConsoleArea(QWidget *parent = nullptr);
   void print(const QString &text);
   void print(const std::string &text);
+  void flush();
 
 private slots:
   void handleInput();

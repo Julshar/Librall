@@ -36,3 +36,9 @@ void ConsoleArea::handleInput()
   outputArea->append("> " + input);
   inputField->clear();
 }
+
+void ConsoleArea::flush()
+{
+  outputArea->clear();
+  inputField->clear();
+}

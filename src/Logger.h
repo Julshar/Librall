@@ -35,6 +35,8 @@ public:
     log(QString::fromStdString(oss.str()));
   }
 
+  static void flush();
+
 private:
   static inline ConsoleArea* s_console = nullptr;
 };
