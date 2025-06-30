@@ -19,7 +19,9 @@ ButtonPanelArea::ButtonPanelArea(QWidget *parent)
 
   connect(btnSortTest, &QPushButton::clicked, []()
   {
-    QtConcurrent::run([]()
+    // QtConcurrent::run produces warnings if result is not used
+    // we don't need result here but save it to avoid warnings
+    QFuture<void> result = QtConcurrent::run([]()
     {
       SortAlgsComp comp;
       comp.runFunctionalTest();
@@ -28,7 +30,7 @@ ButtonPanelArea::ButtonPanelArea(QWidget *parent)
 
   connect(btnSortComp, &QPushButton::clicked, []()
   {
-    QtConcurrent::run([]() 
+    QFuture<void> result = QtConcurrent::run([]() 
     {
       SortAlgsComp comp;
       comp.runSpeedTest();
