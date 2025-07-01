@@ -27,7 +27,7 @@ echo "Build succeeded!"
 echo "Copying data files..."
 cp -r data "$BUILD_DIR"/data
 
-echo "Running the project..."
+echo "Running Librall..."
 cd "$BUILD_DIR"
 ./librall
 cd ..
