@@ -7,6 +7,7 @@
 
 #include "SortAlgsComp.h"
 #include "DatabaseTest.h"
+#include "Logger.h"
 
 ButtonPanelArea::ButtonPanelArea(QWidget *parent)
   : QWidget(parent)
@@ -16,6 +17,12 @@ ButtonPanelArea::ButtonPanelArea(QWidget *parent)
   QPushButton *btnSortTest = new QPushButton("Test Sort");
   QPushButton *btnSortComp = new QPushButton("Compare Sort");
   QPushButton *btnDBTest = new QPushButton("Test DB");
+  QPushButton *btnFlushConsole = new QPushButton("Flush Console");
+
+  connect(btnFlushConsole, &QPushButton::clicked, []()
+  {
+    Logger::flush();
+  });
 
   connect(btnSortTest, &QPushButton::clicked, []()
   {
@@ -46,6 +53,7 @@ ButtonPanelArea::ButtonPanelArea(QWidget *parent)
   layout->addWidget(btnSortTest);
   layout->addWidget(btnSortComp);
   layout->addWidget(btnDBTest);
+  layout->addWidget(btnFlushConsole);
   layout->addStretch();
   setLayout(layout);
 }

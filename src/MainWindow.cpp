@@ -35,10 +35,16 @@ void MainWindow::setupMenuBar()
   connect(openAction, &QAction::triggered, this, &MainWindow::chooseFile);
 
   QMenu *toolsMenu = menuBar->addMenu("Tools");
-  QAction *flushConsole = toolsMenu->addAction("Flush Console");
-  connect(flushConsole, &QAction::triggered, [this]
+  QAction *consoleMode = toolsMenu->addAction("Console Mode");
+  connect(consoleMode, &QAction::triggered, [this]
   {
-    Logger::flush();
+    Logger::logDebug("Console mode activated.");
+  });
+
+  QAction *gameOfLife = toolsMenu->addAction("Game of Life");
+  connect(gameOfLife, &QAction::triggered, [this]
+  {
+    Logger::logDebug("Initializing Game of Life...");
   });
 
   QMenu *optionsMenu = menuBar->addMenu("Options");
