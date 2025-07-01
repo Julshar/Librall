@@ -6,7 +6,8 @@ class QSplitter;
 class ButtonPanelArea;
 class ConsoleArea;
 
-class MainWindow : public QMainWindow {
+class MainWindow : public QMainWindow
+{
   Q_OBJECT
 
 public:

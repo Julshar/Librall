@@ -2,7 +2,8 @@
 
 #include <QWidget>
 
-class ButtonPanelArea : public QWidget {
+class ButtonPanelArea : public QWidget
+{
   Q_OBJECT
 
 public:

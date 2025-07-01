@@ -36,7 +36,8 @@ void MainWindow::setupMenuBar()
 
   QMenu *toolsMenu = menuBar->addMenu("Tools");
   QAction *flushConsole = toolsMenu->addAction("Flush Console");
-  connect(flushConsole, &QAction::triggered, [this] {
+  connect(flushConsole, &QAction::triggered, [this]
+  {
     Logger::flush();
   });
 
@@ -49,15 +50,18 @@ void MainWindow::setupMenuBar()
 
   optionsMenu->addMenu(viewModeMenu);
 
-  connect(textMode, &QAction::triggered, [this] {
+  connect(textMode, &QAction::triggered, [this]
+  {
     currentDisplayMode = DisplayMode::Text;
     if (!currentFilePath.isEmpty()) reopenFile();
   });
-  connect(hexMode, &QAction::triggered, [this] {
+  connect(hexMode, &QAction::triggered, [this]
+  {
     currentDisplayMode = DisplayMode::Hex;
     if (!currentFilePath.isEmpty()) reopenFile();
   });
-  connect(binMode, &QAction::triggered, [this] {
+  connect(binMode, &QAction::triggered, [this]
+  {
     currentDisplayMode = DisplayMode::Binary;
     if (!currentFilePath.isEmpty()) reopenFile();
   });

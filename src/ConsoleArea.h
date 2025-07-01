@@ -7,7 +7,8 @@
 class QTextEdit;
 class QLineEdit;
 
-class ConsoleArea : public QWidget {
+class ConsoleArea : public QWidget
+{
   Q_OBJECT
 
 public:

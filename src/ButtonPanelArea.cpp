@@ -37,9 +37,10 @@ ButtonPanelArea::ButtonPanelArea(QWidget *parent)
     });
   });
 
-  connect(btnDBTest, &QPushButton::clicked, []() {
-  int res = DatabaseTest::runTest();
-  std::cout << "Database test returned: " << res << "\n";
+  connect(btnDBTest, &QPushButton::clicked, []()
+  {
+    int res = DatabaseTest::runTest();
+    std::cout << "Database test returned: " << res << "\n";
   });
 
   layout->addWidget(btnSortTest);
