@@ -9,7 +9,7 @@ add_subdirectory(util)
 add_subdirectory(logic)
 
 # Link against Qt (adjust version if needed)
-find_package(Qt6 REQUIRED COMPONENTS Widgets Concurrent Sql)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Concurrent Sql Core)
 qt_standard_project_setup() # enables AUTOMOC, AUTOUIC, etc
 
 add_executable(${PROJECT_NAME} 
@@ -27,4 +27,5 @@ target_link_libraries(${PROJECT_NAME}
   Qt6::Widgets
   Qt6::Sql
   Qt6::Concurrent
+  Qt6::Core
 )
