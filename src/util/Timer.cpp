@@ -1,14 +1,14 @@
 #include "Timer.h"
 #include <iostream>
 
-
-Timer::Timer(/* args */)
+Timer::Timer()
 {
   reset();
 }
 
 Timer::~Timer()
 {
+  
 }
 
 void Timer::reset()
