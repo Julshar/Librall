@@ -19,6 +19,8 @@ add_executable(${PROJECT_NAME}
   ConsoleArea.cpp
   MainAreaSection.cpp
   Logger.cpp
+  ModeTabBar.cpp
+  GameOfLifeArea.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} 

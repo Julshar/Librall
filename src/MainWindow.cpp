@@ -3,6 +3,8 @@
 #include "ConsoleArea.h"
 #include "MainAreaSection.h"
 #include "Logger.h"
+#include "ModeTabBar.h"
+#include "GameOfLifeArea.h"
 
 #include <QSplitter>
 #include <QMenuBar>
@@ -38,12 +40,14 @@ void MainWindow::setupMenuBar()
   QAction *consoleMode = toolsMenu->addAction("Console Mode");
   connect(consoleMode, &QAction::triggered, [this]
   {
+    enableMode(UIMode::Console);
     Logger::logDebug("Console mode activated.");
   });
 
   QAction *gameOfLife = toolsMenu->addAction("Game of Life");
   connect(gameOfLife, &QAction::triggered, [this]
   {
+    enableMode(UIMode::GameOfLife);
     Logger::logDebug("Initializing Game of Life...");
   });
 
@@ -81,25 +85,99 @@ void MainWindow::setupLayout()
 {
   mainSplitter = new QSplitter(Qt::Horizontal, this);
   buttonPanel = new ButtonPanelArea;
-  console = new ConsoleArea;
-
-  Logger::attachConsole(console);
+  mainAreaStack = new QStackedWidget(this);
 
   buttonPanel->setMinimumWidth(150);
-  console->setMinimumWidth(400);
+  mainAreaStack->setMinimumWidth(400);
 
   mainSplitter->addWidget(buttonPanel);
-  mainSplitter->addWidget(console);
-
+  mainSplitter->addWidget(mainAreaStack);
   mainSplitter->setStretchFactor(0, 1);
   mainSplitter->setStretchFactor(1, 3);
 
+  modeTabBar = new ModeTabBar(this);
+  // When user presses any tab (or closes tab) ModeTabBar emits proper signal
+  // and MainWindow reacts with proper function thanks to below connect() calls.
+  connect(modeTabBar, &ModeTabBar::modeSelected, this, &MainWindow::switchMode);
+  connect(modeTabBar, &ModeTabBar::modeClosed, this, &MainWindow::closeMode);
+
   QWidget *central = new QWidget(this);
   QVBoxLayout *layout = new QVBoxLayout(central);
+  layout->setContentsMargins(0, 0, 0, 0);
+
+  layout->addWidget(modeTabBar);
   layout->addWidget(mainSplitter);
   central->setLayout(layout);
   setCentralWidget(central);
 }
+
+void MainWindow::enableMode(UIMode mode)
+{
+  if (activeModes.contains(mode))
+  {
+    // Tab (mode) already open, just activate
+    mainAreaStack->setCurrentWidget(activeModes[mode]);
+    buttonPanel->setMode(mode);
+    modeTabBar->setActive(mode);
+    currentMode = mode;
+    return;
+  }
+
+  MainAreaSection *section = nullptr;
+  switch (mode)
+  {
+    case UIMode::Console:
+    {
+      ConsoleArea *c = new ConsoleArea(this);
+      Logger::attachConsole(c);
+      section = c;
+      break;
+    }
+    case UIMode::GameOfLife:
+    {
+      section = new GameOfLifeArea(this);
+      break;
+    }
+  }
+
+  if (section)
+  {
+    mainAreaStack->addWidget(section);
+    activeModes[mode] = section;
+    mainAreaStack->setCurrentWidget(section);
+    buttonPanel->setMode(mode);
+    modeTabBar->addMode(mode, modeName(mode));
+    currentMode = mode;
+  }
+}
+
+void MainWindow::closeMode(UIMode mode)
+{
+  if (!activeModes.contains(mode)) return;
+
+  QWidget *widget = activeModes[mode];
+  mainAreaStack->removeWidget(widget);
+  delete widget;
+  activeModes.remove(mode);
+  modeTabBar->removeMode(mode);
+
+  if (currentMode == mode)
+  {
+    currentMode = UIMode::None;
+    buttonPanel->setMode(UIMode::None);
+  }
+}
+
+void MainWindow::switchMode(UIMode mode)
+{
+  if (!activeModes.contains(mode)) return;
+  mainAreaStack->setCurrentWidget(activeModes[mode]);
+  buttonPanel->setMode(mode);
+  modeTabBar->setActive(mode);
+  currentMode = mode;
+}
+
+// Console mode functions: chooseFile, reopenFile, formatData
 
 void MainWindow::chooseFile()
 {
@@ -166,5 +244,17 @@ void MainWindow::formatData(const QByteArray &data, QString &formatted) const
       formatted = binary;
       break;
     }
+  }
+}
+
+// Helper function to get mode name
+
+QString MainWindow::modeName(UIMode mode) const
+{
+  switch (mode)
+  {
+    case UIMode::Console: return "Console";
+    case UIMode::GameOfLife: return "Game of Life";
+    default: return "Unknown";
   }
 }

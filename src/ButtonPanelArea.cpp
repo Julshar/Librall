@@ -1,7 +1,6 @@
 #include "ButtonPanelArea.h"
 
 #include <iostream>
-#include <QVBoxLayout>
 #include <QPushButton>
 #include <QtConcurrent/QtConcurrent>
 
@@ -12,48 +11,84 @@
 ButtonPanelArea::ButtonPanelArea(QWidget *parent)
   : QWidget(parent)
 {
-  auto *layout = new QVBoxLayout(this);
+  vLayout = new QVBoxLayout(this);
+  setLayout(vLayout);
+}
 
-  QPushButton *btnSortTest = new QPushButton("Test Sort");
-  QPushButton *btnSortComp = new QPushButton("Compare Sort");
-  QPushButton *btnDBTest = new QPushButton("Test DB");
-  QPushButton *btnFlushConsole = new QPushButton("Flush Console");
-
-  connect(btnFlushConsole, &QPushButton::clicked, []()
+void ButtonPanelArea::setMode(UIMode mode)
+{
+  QLayoutItem *child;
+  while ((child = layout()->takeAt(0)) != nullptr)
   {
-    Logger::flush();
-  });
+    /*
+    * deleteLater() is used to safely schedule the widget for deletion
+    * after it finishes any pending events, avoiding potential crashes
+    * or undefined behavior from immediate deletion.
+    */
+    if (child->widget()) child->widget()->deleteLater();
+    delete child;
+  }
 
-  connect(btnSortTest, &QPushButton::clicked, []()
+  switch (mode)
   {
-    // QtConcurrent::run produces warnings if result is not used
-    // we don't need result here but save it to avoid warnings
-    QFuture<void> result = QtConcurrent::run([]()
+    case UIMode::Console:
     {
-      SortAlgsComp comp;
-      comp.runFunctionalTest();
-    });
-  });
+      QPushButton *btnSortTest = new QPushButton("Test Sort");
+      QPushButton *btnSortComp = new QPushButton("Compare Sort");
+      QPushButton *btnDBTest = new QPushButton("Test DB");
+      QPushButton *btnFlushConsole = new QPushButton("Flush Console");
 
-  connect(btnSortComp, &QPushButton::clicked, []()
-  {
-    QFuture<void> result = QtConcurrent::run([]() 
+      connect(btnFlushConsole, &QPushButton::clicked, []()
+      {
+        Logger::flush();
+      });
+
+      connect(btnSortTest, &QPushButton::clicked, []()
+      {
+        // QtConcurrent::run produces warnings if result is not used
+        // we don't need result here but save it to avoid warnings
+        QFuture<void> result = QtConcurrent::run([]()
+        {
+          SortAlgsComp comp;
+          comp.runFunctionalTest();
+        });
+      });
+
+      connect(btnSortComp, &QPushButton::clicked, []()
+      {
+        QFuture<void> result = QtConcurrent::run([]() 
+        {
+          SortAlgsComp comp;
+          comp.runSpeedTest();
+        });
+      });
+
+      connect(btnDBTest, &QPushButton::clicked, []()
+      {
+        int res = DatabaseTest::runTest();
+        std::cout << "Database test returned: " << res << "\n";
+      });
+      vLayout->addWidget(btnSortTest);
+      vLayout->addWidget(btnSortComp);
+      vLayout->addWidget(btnDBTest);
+      vLayout->addWidget(btnFlushConsole);
+      break;
+    }
+    case UIMode::GameOfLife:
     {
-      SortAlgsComp comp;
-      comp.runSpeedTest();
-    });
-  });
+      QPushButton *btnStart = new QPushButton("Start");
+      QPushButton *btnStop = new QPushButton("Stop");
+      QPushButton *btnRandomize = new QPushButton("Randomize");
 
-  connect(btnDBTest, &QPushButton::clicked, []()
-  {
-    int res = DatabaseTest::runTest();
-    std::cout << "Database test returned: " << res << "\n";
-  });
-
-  layout->addWidget(btnSortTest);
-  layout->addWidget(btnSortComp);
-  layout->addWidget(btnDBTest);
-  layout->addWidget(btnFlushConsole);
-  layout->addStretch();
-  setLayout(layout);
+      vLayout->addWidget(btnStart);
+      vLayout->addWidget(btnStop);
+      vLayout->addWidget(btnRandomize);
+      break;
+    }
+    case UIMode::None:
+    {
+      break;
+    }
+  }
+  vLayout->addStretch(); // Always end with stretch for spacing
 }

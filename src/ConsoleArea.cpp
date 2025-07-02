@@ -6,7 +6,7 @@
 #include <string>
 
 ConsoleArea::ConsoleArea(QWidget *parent)
-  : QWidget(parent)
+  : MainAreaSection(parent)
 {
   outputArea = new QTextEdit(this);
   inputField = new QLineEdit(this);

@@ -4,10 +4,12 @@
 #include <QTextEdit>
 #include <QString>
 
+#include "MainAreaSection.h"
+
 class QTextEdit;
 class QLineEdit;
 
-class ConsoleArea : public QWidget
+class ConsoleArea : public MainAreaSection
 {
   Q_OBJECT
 
