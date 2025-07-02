@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
   setupMenuBar();
   setupLayout();
-  setWindowTitle("Librall - Advanced GUI");
+  setWindowTitle("Librall");
   resize(1000, 700);
 }
 
