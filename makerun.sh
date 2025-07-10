@@ -16,8 +16,8 @@ echo "Running CMake..."
 cmake -DCMAKE_BUILD_TYPE=Release -S src -B "$BUILD_DIR"
 
 echo "Building..."
+# Enable parallel build with -j flag and use nproc to determine the number of available cores
 cmake --build "$BUILD_DIR" -- -j$(nproc)
-# cmake --build BUILD_DIR
 if [ $? -ne 0 ]; then
     echo "Build failed!"
     exit 1
