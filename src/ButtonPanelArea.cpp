@@ -79,10 +79,12 @@ void ButtonPanelArea::setMode(UIMode mode)
       QPushButton *btnStart = new QPushButton("Start");
       QPushButton *btnStop = new QPushButton("Stop");
       QPushButton *btnRandomize = new QPushButton("Randomize");
+      QPushButton *btnClear = new QPushButton("Clear");
 
       vLayout->addWidget(btnStart);
       vLayout->addWidget(btnStop);
       vLayout->addWidget(btnRandomize);
+      vLayout->addWidget(btnClear);
       break;
     }
     case UIMode::None:

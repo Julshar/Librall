@@ -4,7 +4,7 @@
 #include "MainAreaSection.h"
 #include "Logger.h"
 #include "ModeTabBar.h"
-#include "GameOfLifeArea.h"
+#include "GameOfLife.h"
 
 #include <QSplitter>
 #include <QMenuBar>
@@ -135,7 +135,7 @@ void MainWindow::enableMode(UIMode mode)
     }
     case UIMode::GameOfLife:
     {
-      section = new GameOfLifeArea(this);
+      section = new GameOfLife(this);
       break;
     }
   }

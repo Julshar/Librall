@@ -5,22 +5,21 @@ project(librall VERSION 0.1.0
 
 set(CMAKE_CXX_STANDARD 17)
 
+# Link against Qt libraries
+find_package(Qt6 REQUIRED COMPONENTS Widgets Concurrent Sql Core)
+
+# enables AUTOMOC, AUTOUIC, AUTORCC
+qt_standard_project_setup()
+
 add_subdirectory(util)
 add_subdirectory(logic)
-
-# Link against Qt (adjust version if needed)
-find_package(Qt6 REQUIRED COMPONENTS Widgets Concurrent Sql Core)
-qt_standard_project_setup() # enables AUTOMOC, AUTOUIC, etc
 
 add_executable(${PROJECT_NAME} 
   main.cpp
   MainWindow.cpp
   ButtonPanelArea.cpp
-  ConsoleArea.cpp
-  MainAreaSection.cpp
   Logger.cpp
   ModeTabBar.cpp
-  GameOfLifeArea.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} 

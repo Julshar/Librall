@@ -12,5 +12,5 @@ class MainAreaSection : public QWidget
 
 public:
   MainAreaSection(QWidget *parent = nullptr);
-  virtual ~MainAreaSection() = default;
+  virtual ~MainAreaSection();
 };

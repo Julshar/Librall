@@ -7,3 +7,5 @@ MainAreaSection::MainAreaSection(QWidget *parent)
 {
 
 }
+
+MainAreaSection::~MainAreaSection() = default;

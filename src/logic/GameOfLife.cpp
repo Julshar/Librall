@@ -1,7 +1,7 @@
-#include "GameOfLifeArea.h"
+#include "GameOfLife.h"
 #include <QVBoxLayout>
 
-GameOfLifeArea::GameOfLifeArea(QWidget *parent)
+GameOfLife::GameOfLife(QWidget *parent)
   : MainAreaSection(parent), currentState(rows, std::vector<bool>(cols, false))
 {
   auto *mainLayout = new QVBoxLayout(this);
@@ -39,28 +39,28 @@ GameOfLifeArea::GameOfLifeArea(QWidget *parent)
   timer = new QTimer(this);
   timer->setInterval(300); // ms
 
-  connect(startButton, &QPushButton::clicked, this, &GameOfLifeArea::startSimulation);
-  connect(stopButton, &QPushButton::clicked, this, &GameOfLifeArea::stopSimulation);
-  connect(timer, &QTimer::timeout, this, &GameOfLifeArea::updateGeneration);
+  connect(startButton, &QPushButton::clicked, this, &GameOfLife::startSimulation);
+  connect(stopButton, &QPushButton::clicked, this, &GameOfLife::stopSimulation);
+  connect(timer, &QTimer::timeout, this, &GameOfLife::updateGeneration);
 
   setLayout(mainLayout);
 }
 
-void GameOfLifeArea::startSimulation()
+void GameOfLife::startSimulation()
 {
   timer->start();
 }
 
-void GameOfLifeArea::stopSimulation()
+void GameOfLife::stopSimulation()
 {
   timer->stop();
 }
 
-void GameOfLifeArea::toggleCell()
+void GameOfLife::toggleCell()
 {
 }
 
-void GameOfLifeArea::updateGeneration()
+void GameOfLife::updateGeneration()
 {
   std::vector<std::vector<bool>> nextState = currentState;
 
@@ -93,7 +93,7 @@ void GameOfLifeArea::updateGeneration()
   }
 }
 
-int GameOfLifeArea::liveNeighborCount(int row, int col) const
+int GameOfLife::liveNeighborCount(int row, int col) const
 {
   int count = 0;
   for (int dx = -1; dx <= 1; ++dx)

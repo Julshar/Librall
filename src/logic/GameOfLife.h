@@ -6,12 +6,12 @@
 #include <QPushButton>
 #include <vector>
 
-class GameOfLifeArea : public MainAreaSection
+class GameOfLife : public MainAreaSection
 {
   Q_OBJECT
 
 public:
-  explicit GameOfLifeArea(QWidget *parent = nullptr);
+  explicit GameOfLife(QWidget *parent = nullptr);
 
 private slots:
   void toggleCell();
