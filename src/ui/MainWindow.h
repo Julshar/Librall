@@ -8,10 +8,12 @@
 #include "UIMode.h"
 
 class QSplitter;
-class ButtonPanelArea;
+class SidePanelArea;
 class ConsoleArea;
 class ModeTabBar;
 class MainAreaSection;
+
+enum class DisplayMode { Text, Hex, Binary };
 
 class MainWindow : public QMainWindow
 {
@@ -23,6 +25,7 @@ public:
 private:
   void setupMenuBar();
   void setupLayout();
+  void registerSubprogramFactories();
 
   void enableMode(UIMode mode);
   void closeMode(UIMode mode);
@@ -31,13 +34,15 @@ private:
   void formatData(const QByteArray &data, QString &formatted) const;
 
   QSplitter *mainSplitter;
-  ButtonPanelArea *buttonPanel;
+  SidePanelArea *sidePanel;
   ConsoleArea *console;
 
   QStackedWidget *mainAreaStack;
   ModeTabBar *modeTabBar;
-  QMap<UIMode, MainAreaSection*> activeModes;
   UIMode currentMode = UIMode::None;
+
+  DisplayMode currentDisplayMode = DisplayMode::Text;
+  QString currentFilePath;
 
 private slots:
   void chooseFile();

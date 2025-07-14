@@ -5,12 +5,14 @@
 #include <vector>
 #include <sstream>
 
-#include "ConsoleArea.h"
+#include "ILoggerClient.h"
+
+class ConsoleArea;
 
 class Logger
 {
 public:
-  static void attachConsole(ConsoleArea* console);
+  static void setClient(std::shared_ptr<ILoggerClient> client);
 
   static void log(const QString& msg);
   static void logDebug(const QString& msg);
@@ -38,5 +40,5 @@ public:
   static void flush();
 
 private:
-  static inline ConsoleArea* s_console = nullptr;
+  static inline std::shared_ptr<ILoggerClient> s_client = nullptr;
 };

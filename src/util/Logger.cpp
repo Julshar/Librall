@@ -3,19 +3,16 @@
 
 #undef DEBUG
 
-void Logger::attachConsole(ConsoleArea* console)
+void Logger::setClient(std::shared_ptr<ILoggerClient> client)
 {
-  s_console = console;
+  s_client = client;
 }
 
 void Logger::log(const QString& msg)
 {
-  if (s_console)
+  if (s_client)
   {
-    QMetaObject::invokeMethod(s_console, [msg]()
-    {
-      s_console->print(msg);
-    }, Qt::QueuedConnection);
+    s_client->print(msg);
   }
 
   #ifdef DEBUG
@@ -26,12 +23,9 @@ void Logger::log(const QString& msg)
 void Logger::logDebug(const QString& msg)
 {
   QString formatted = "[DEBUG] " + msg;
-  if (s_console)
+  if (s_client)
   {
-    QMetaObject::invokeMethod(s_console, [formatted]()
-    {
-      s_console->print(formatted);
-    }, Qt::QueuedConnection);
+    s_client->print(formatted);
   }
 
   std::cout << formatted.toStdString() << std::endl;
@@ -40,12 +34,9 @@ void Logger::logDebug(const QString& msg)
 void Logger::logError(const QString& msg)
 {
   QString formatted = "ERROR! " + msg;
-  if (s_console)
+  if (s_client)
   {
-    QMetaObject::invokeMethod(s_console, [formatted]()
-    {
-      s_console->print(formatted);
-    }, Qt::QueuedConnection);
+    s_client->print(formatted);
   }
 
   std::cerr << formatted.toStdString() << std::endl;
@@ -83,11 +74,8 @@ void Logger::logError(const char* msg)
 
 void Logger::flush()
 {
-  if (s_console)
+  if (s_client)
   {
-    QMetaObject::invokeMethod(s_console, []()
-    {
-      s_console->flush();
-    }, Qt::QueuedConnection);
+    s_client->flush();
   }
 }

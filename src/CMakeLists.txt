@@ -12,21 +12,26 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets Concurrent Sql Core)
 qt_standard_project_setup()
 
 add_subdirectory(util)
-add_subdirectory(logic)
+add_subdirectory(core)
+add_subdirectory(ui)
+add_subdirectory(subprograms/game_of_life)
+add_subdirectory(subprograms/console)
+# add_subdirectory(subprograms/database_tool)
 
 add_executable(${PROJECT_NAME} 
   main.cpp
-  MainWindow.cpp
-  ButtonPanelArea.cpp
-  Logger.cpp
-  ModeTabBar.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} 
-  util
-  logic
-  Qt6::Widgets
-  Qt6::Sql
-  Qt6::Concurrent
-  Qt6::Core
+  PRIVATE
+    util
+    ui
+    core
+    game_of_life
+    console
+    # database_tool
+    Qt6::Widgets
+    Qt6::Sql
+    Qt6::Concurrent
+    Qt6::Core
 )

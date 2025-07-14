@@ -1,10 +1,13 @@
 #include "MainWindow.h"
-#include "ButtonPanelArea.h"
+#include "SidePanelArea.h"
 #include "ConsoleArea.h"
-#include "MainAreaSection.h"
 #include "Logger.h"
 #include "ModeTabBar.h"
-#include "GameOfLife.h"
+
+#include "ISubprogram.h"
+#include "SubprogramManager.h"
+#include "GameOfLifeProgram.h"
+#include "ConsoleProgram.h"
 
 #include <QSplitter>
 #include <QMenuBar>
@@ -15,13 +18,10 @@
 #include <QByteArray>
 #include <QTextStream>
 
-enum class DisplayMode { Text, Hex, Binary };
-DisplayMode currentDisplayMode = DisplayMode::Text;
-QString currentFilePath;
-
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
 {
+  registerSubprogramFactories();
   setupMenuBar();
   setupLayout();
   setWindowTitle("Librall");
@@ -47,8 +47,8 @@ void MainWindow::setupMenuBar()
   QAction *gameOfLife = toolsMenu->addAction("Game of Life");
   connect(gameOfLife, &QAction::triggered, [this]
   {
-    enableMode(UIMode::GameOfLife);
     Logger::logDebug("Initializing Game of Life...");
+    enableMode(UIMode::GameOfLife);
   });
 
   QMenu *optionsMenu = menuBar->addMenu("Options");
@@ -84,13 +84,13 @@ void MainWindow::setupMenuBar()
 void MainWindow::setupLayout()
 {
   mainSplitter = new QSplitter(Qt::Horizontal, this);
-  buttonPanel = new ButtonPanelArea;
+  sidePanel = new SidePanelArea;
   mainAreaStack = new QStackedWidget(this);
 
-  buttonPanel->setMinimumWidth(150);
+  sidePanel->setMinimumWidth(150);
   mainAreaStack->setMinimumWidth(400);
 
-  mainSplitter->addWidget(buttonPanel);
+  mainSplitter->addWidget(sidePanel);
   mainSplitter->addWidget(mainAreaStack);
   mainSplitter->setStretchFactor(0, 1);
   mainSplitter->setStretchFactor(1, 3);
@@ -111,69 +111,86 @@ void MainWindow::setupLayout()
   setCentralWidget(central);
 }
 
+// Register lambdas for subprogram creation to use for later
+void MainWindow::registerSubprogramFactories()
+{
+  auto& sm = SubprogramManager::instance();
+
+  sm.registerFactory(UIMode::Console, [](QWidget* parent) {
+    return std::make_unique<ConsoleProgram>(parent);
+  });
+
+  sm.registerFactory(UIMode::GameOfLife, [](QWidget* parent) {
+    return std::make_unique<GameOfLifeProgram>(parent);
+  });
+}
+
+// When clicked in Tools menu
 void MainWindow::enableMode(UIMode mode)
 {
-  if (activeModes.contains(mode))
-  {
-    // Tab (mode) already open, just activate
-    mainAreaStack->setCurrentWidget(activeModes[mode]);
-    buttonPanel->setMode(mode);
-    modeTabBar->setActive(mode);
-    currentMode = mode;
-    return;
-  }
+  auto& sm = SubprogramManager::instance();
 
-  MainAreaSection *section = nullptr;
-  switch (mode)
+  if (sm.registerProgram(mode, this) == false)
   {
-    case UIMode::Console:
-    {
-      ConsoleArea *c = new ConsoleArea(this);
-      Logger::attachConsole(c);
-      section = c;
-      break;
-    }
-    case UIMode::GameOfLife:
-    {
-      section = new GameOfLife(this);
-      break;
-    }
+    Logger::logError(QString("ERROR! Failed to register subprogram for mode: %1").arg(static_cast<int>(mode)));
   }
+  
+  // Always activate the program
+  sm.activateProgram(mode);
 
-  if (section)
+  ISubprogram *prog = sm.getProgram(mode);
+  if (prog)
   {
-    mainAreaStack->addWidget(section);
-    activeModes[mode] = section;
-    mainAreaStack->setCurrentWidget(section);
-    buttonPanel->setMode(mode);
-    modeTabBar->addMode(mode, modeName(mode));
+    // Set side panel widgets
+    sidePanel->setPanel(prog->getSidePanelControls());
+
+    // Get main widget and add it to stack if not in the stack (newly created)
+    QWidget *mainWidget = prog->getMainWidget();
+    if (mainAreaStack->indexOf(mainWidget) == -1)
+    {
+      mainAreaStack->addWidget(mainWidget);
+    }
+
+    // Set the main widget as current
+    mainAreaStack->setCurrentWidget(mainWidget);
     currentMode = mode;
+  }
+  else
+  {
+    Logger::logError(QString("ERROR! No subprogram found for mode: %1").arg(static_cast<int>(mode)));
   }
 }
 
 void MainWindow::closeMode(UIMode mode)
 {
-  if (!activeModes.contains(mode)) return;
+  SubprogramManager::instance().closeProgram(mode);
 
-  QWidget *widget = activeModes[mode];
-  mainAreaStack->removeWidget(widget);
-  delete widget;
-  activeModes.remove(mode);
-  modeTabBar->removeMode(mode);
+  // TODO: This function is called when user clicks "x" on some tab.
+  // When it is done, currently displayed mode should be closed and
+  // erased from mainAreaStack. Furthermore, a neighboring mode on tab bar
+  // should be activated automatically (if there is any).
+  // Otherwise, current mode should be set to None and widgets cleared.
 
   if (currentMode == mode)
   {
     currentMode = UIMode::None;
-    buttonPanel->setMode(UIMode::None);
+    sidePanel->setPanel({});
   }
 }
 
+// When clicked on tab bar
 void MainWindow::switchMode(UIMode mode)
 {
-  if (!activeModes.contains(mode)) return;
-  mainAreaStack->setCurrentWidget(activeModes[mode]);
-  buttonPanel->setMode(mode);
-  modeTabBar->setActive(mode);
+  auto& sm = SubprogramManager::instance();
+  sm.activateProgram(mode);
+
+  ISubprogram *prog = sm.getProgram(mode);
+  if (prog)
+  {
+    sidePanel->setPanel(prog->getSidePanelControls());
+    mainAreaStack->setCurrentWidget(prog->getMainWidget());
+  }
+
   currentMode = mode;
 }
 
