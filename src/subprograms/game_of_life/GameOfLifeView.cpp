@@ -52,7 +52,13 @@ void GameOfLifeView::refreshCell(int x, int y)
 
 void GameOfLifeView::updateUI()
 {
-  logic->updateGeneration();
+  int changed = logic->updateGeneration();
+  if (changed == 0 && autoRandomize)
+  {
+    randomizeCells();
+    return; // Skip cell refresh - done in randomizeCells
+  }
+
   int rows = logic->rowCount();
   int cols = logic->colCount();
   for (int x = 0; x < rows; ++x)
@@ -111,4 +117,9 @@ void GameOfLifeView::clearCells()
   }
 
   Logger::logDebug("Game of Life: Cells cleared");
+}
+
+void GameOfLifeView::toggleAutoRandomize()
+{
+  autoRandomize = !autoRandomize;
 }

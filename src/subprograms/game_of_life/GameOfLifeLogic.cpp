@@ -15,8 +15,9 @@ bool GameOfLifeLogic::cellState(int x, int y) const
   return currentState[x][y];
 }
 
-void GameOfLifeLogic::updateGeneration()
+int GameOfLifeLogic::updateGeneration()
 {
+  int counter = 0;
   std::vector<std::vector<bool>> nextState = currentState; // optimize: NO NESTED VECTOR
 
   for (int x = 0; x < rows; ++x)
@@ -25,13 +26,26 @@ void GameOfLifeLogic::updateGeneration()
     {
       int neighbors = liveNeighborCount(x, y);
       if (currentState[x][y])
-        nextState[x][y] = (neighbors == 2 || neighbors == 3);
+      {
+        if (neighbors < 2 || neighbors > 3)
+        {
+          nextState[x][y] = false;
+          ++counter; // count dead cells
+        }
+      }
       else
-        nextState[x][y] = (neighbors == 3);
+      {
+        if (neighbors == 3)
+        {
+          nextState[x][y] = true;
+          ++counter; // count born cells
+        }
+      }
     }
   }
 
   currentState = nextState;
+  return counter; // return number of changes (born or dead cells)
 }
 
 int GameOfLifeLogic::liveNeighborCount(int x, int y) const

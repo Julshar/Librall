@@ -21,10 +21,13 @@ public slots:
   void stopSimulation();
   void randomizeCells();
   void clearCells();
+  void toggleAutoRandomize();
   
 private:
   void setupGrid();
   void refreshCell(int x, int y);
+
+  bool autoRandomize = false;
 
   GameOfLifeLogic* logic;
   QVector<QVector<QPushButton*>> cells;

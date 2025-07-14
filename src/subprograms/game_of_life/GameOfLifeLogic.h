@@ -8,7 +8,7 @@ public:
   GameOfLifeLogic(int rows = 20, int cols = 20);
 
   void toggleCell(int x, int y);
-  void updateGeneration();
+  int updateGeneration();
 
   bool cellState(int x, int y) const;
   int rowCount() const { return rows; }
