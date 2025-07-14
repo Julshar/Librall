@@ -8,4 +8,4 @@ add_library(game_of_life STATIC
 )
 
 target_include_directories(game_of_life PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(game_of_life core Qt6::Widgets)
+target_link_libraries(game_of_life core util Qt6::Widgets)

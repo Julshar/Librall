@@ -17,7 +17,7 @@ bool GameOfLifeLogic::cellState(int x, int y) const
 
 void GameOfLifeLogic::updateGeneration()
 {
-  std::vector<std::vector<bool>> nextState = currentState;
+  std::vector<std::vector<bool>> nextState = currentState; // optimize: NO NESTED VECTOR
 
   for (int x = 0; x < rows; ++x)
   {

@@ -91,6 +91,12 @@ unsigned int Random::genValue(unsigned int min, unsigned int max)
   return result;
 }
 
+bool Random::genBool()
+{
+  std::mt19937::result_type randomNum = generator();
+  return (randomNum % 2) == 0;
+}
+
 int Random::getMinVal()
 {
   return generator.min();

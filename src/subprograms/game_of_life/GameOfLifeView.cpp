@@ -1,6 +1,7 @@
 #include "GameOfLifeView.h"
 #include "GameOfLifeLogic.h"
 #include "Logger.h"
+#include "Random.h"
 #include <QGridLayout>
 #include <QVBoxLayout>
 
@@ -35,14 +36,6 @@ GameOfLifeView::GameOfLifeView(GameOfLifeLogic* logic, QWidget* parent)
 
   mainLayout->addLayout(gridLayout);
 
-  startButton = new QPushButton("Start");
-  stopButton = new QPushButton("Stop");
-  mainLayout->addWidget(startButton);
-  mainLayout->addWidget(stopButton);
-
-  connect(startButton, &QPushButton::clicked, this, &GameOfLifeView::startSimulation);
-  connect(stopButton, &QPushButton::clicked, this, &GameOfLifeView::stopSimulation);
-
   timer = new QTimer(this);
   connect(timer, &QTimer::timeout, this, &GameOfLifeView::updateUI);
 
@@ -74,21 +67,48 @@ void GameOfLifeView::updateUI()
 void GameOfLifeView::startSimulation()
 {
   timer->start(300);
-  Logger::logDebug("Game of Life: Simulation started.");
+  Logger::logDebug("Game of Life: Simulation started");
 }
 
 void GameOfLifeView::stopSimulation()
 {
   timer->stop();
-  Logger::logDebug("Game of Life: Simulation stopped.");
+  Logger::logDebug("Game of Life: Simulation stopped");
 }
 
 void GameOfLifeView::randomizeCells()
 {
-  Logger::logDebug("Game of Life: Randomizing cells.");
+  int rows = logic->rowCount();
+  int cols = logic->colCount();
+  for (int x = 0; x < rows; ++x)
+  {
+    for (int y = 0; y < cols; ++y)
+    {
+      if (Random::genBool() == true)
+      {
+        logic->toggleCell(x, y);
+      }
+      refreshCell(x, y);
+    }
+  }
+  Logger::logDebug("Game of Life: Cells randomized");
 }
 
 void GameOfLifeView::clearCells()
 {
-  Logger::logDebug("Game of Life: Clearing cells.");
+  int rows = logic->rowCount();
+  int cols = logic->colCount();
+  for (int x = 0; x < rows; ++x)
+  {
+    for (int y = 0; y < cols; ++y)
+    {
+      if (logic->cellState(x, y))
+      {
+        logic->toggleCell(x, y);
+      }
+      refreshCell(x, y);
+    }
+  }
+
+  Logger::logDebug("Game of Life: Cells cleared");
 }
