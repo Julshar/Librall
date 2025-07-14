@@ -154,6 +154,9 @@ void MainWindow::enableMode(UIMode mode)
     // Set the main widget as current
     mainAreaStack->setCurrentWidget(mainWidget);
     currentMode = mode;
+
+    modeTabBar->addMode(mode, modeName(mode));
+    modeTabBar->setActive(mode);
   }
   else
   {
@@ -164,6 +167,7 @@ void MainWindow::enableMode(UIMode mode)
 void MainWindow::closeMode(UIMode mode)
 {
   SubprogramManager::instance().closeProgram(mode);
+  modeTabBar->removeMode(mode);
 
   // TODO: This function is called when user clicks "x" on some tab.
   // When it is done, currently displayed mode should be closed and
@@ -190,7 +194,12 @@ void MainWindow::switchMode(UIMode mode)
     sidePanel->setPanel(prog->getSidePanelControls());
     mainAreaStack->setCurrentWidget(prog->getMainWidget());
   }
+  else
+  {
+    Logger::logError(QString("ERROR! No subprogram found for mode: %1").arg(static_cast<int>(mode)));
+  }
 
+  modeTabBar->setActive(mode);
   currentMode = mode;
 }
 
