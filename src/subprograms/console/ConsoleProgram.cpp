@@ -45,7 +45,7 @@ QList<QWidget *> ConsoleProgram::getSidePanelControls()
 
   QObject::connect(btnFlushConsole, &QPushButton::clicked, m_consoleWidget, &ConsoleArea::flushConsole);
   QObject::connect(btnSortTest, &QPushButton::clicked, [this]() { runSortTest(); });
-  QObject::connect(btnSortTest, &QPushButton::clicked, [this]() { runSortComparison(); });
+  QObject::connect(btnSortComp, &QPushButton::clicked, [this]() { runSortComparison(); });
 
   widgets << btnSortTest << btnSortComp << btnFlushConsole;
   return widgets;
