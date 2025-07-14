@@ -72,7 +72,7 @@ void GameOfLifeView::updateUI()
 
 void GameOfLifeView::startSimulation()
 {
-  timer->start(300);
+  timer->start(refreshInterval);
   Logger::logDebug("Game of Life: Simulation started");
 }
 
@@ -80,6 +80,22 @@ void GameOfLifeView::stopSimulation()
 {
   timer->stop();
   Logger::logDebug("Game of Life: Simulation stopped");
+}
+void GameOfLifeView::setRefreshInterval(int interval)
+{
+  interval = interval % refreshIntervalStep > refreshIntervalStep / 2
+    ? (interval / refreshIntervalStep + 1) * refreshIntervalStep
+    : (interval / refreshIntervalStep) * refreshIntervalStep;
+  
+  if (interval != refreshInterval)
+  {
+    refreshInterval = interval;
+    if (timer->isActive())
+    {
+      timer->setInterval(refreshInterval);
+    }
+    Logger::logDebug("Game of Life: Refresh interval set to " + std::to_string(refreshInterval) + " ms");
+  }
 }
 
 void GameOfLifeView::randomizeCells()

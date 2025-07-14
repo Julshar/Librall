@@ -16,18 +16,23 @@ public:
 
   void updateUI();
 
+  int getRefreshInterval() { return refreshInterval; }
+
 public slots:
   void startSimulation();
   void stopSimulation();
   void randomizeCells();
   void clearCells();
   void toggleAutoRandomize();
+  void setRefreshInterval(int interval);
   
 private:
   void setupGrid();
   void refreshCell(int x, int y);
 
   bool autoRandomize = false;
+  int refreshInterval = 200; // milliseconds
+  int refreshIntervalStep = 25;
 
   GameOfLifeLogic* logic;
   QVector<QVector<QPushButton*>> cells;

@@ -28,7 +28,9 @@ void Logger::logDebug(const QString& msg)
     s_client->print(formatted);
   }
 
+  #ifdef DEBUG
   std::cout << formatted.toStdString() << std::endl;
+  #endif
 }
 
 void Logger::logError(const QString& msg)
