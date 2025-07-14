@@ -166,8 +166,8 @@ void MainWindow::enableMode(UIMode mode)
 
 void MainWindow::closeMode(UIMode mode)
 {
-  SubprogramManager::instance().closeProgram(mode);
   modeTabBar->removeMode(mode);
+  SubprogramManager::instance().closeProgram(mode);
 
   // TODO: This function is called when user clicks "x" on some tab.
   // When it is done, currently displayed mode should be closed and

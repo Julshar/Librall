@@ -21,7 +21,7 @@ bool SubprogramManager::registerProgram(UIMode mode, QWidget *parent)
   {
     if ((m_factories.find(mode) != m_factories.end()) == false)
     {
-      Logger::logError(QString("ERROR! No factory registered for mode: %1").arg(static_cast<int>(mode)));
+      Logger::logError(QString("No factory registered for mode: %1").arg(static_cast<int>(mode)));
       return false;
     }
     m_programs[mode] = m_factories[mode](parent);
@@ -59,7 +59,7 @@ void SubprogramManager::closeProgram(UIMode mode)
   {
     // Remove the program from the map
     m_programs.erase(mode);
-    Logger::logDebug(QString("DEBUG: Closed subprogram for mode: %1").arg(static_cast<int>(mode)));
+    Logger::logDebug(QString("Closed subprogram for mode: %1").arg(static_cast<int>(mode)));
   }
 }
 

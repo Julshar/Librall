@@ -12,6 +12,7 @@ target_include_directories(ui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(ui
   PUBLIC core
   PUBLIC console
+  PUBLIC util
   PUBLIC game_of_life
   PRIVATE Qt6::Widgets
 )

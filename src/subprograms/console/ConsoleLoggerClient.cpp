@@ -5,7 +5,8 @@
 ConsoleLoggerClient::ConsoleLoggerClient(ConsoleArea* console)
   : m_console(console) {}
 
-void ConsoleLoggerClient::print(const QString& message) {
+void ConsoleLoggerClient::print(const QString& message)
+{
   if (!m_console) return;
 
   QMetaObject::invokeMethod(m_console, [this, message]()
@@ -14,7 +15,8 @@ void ConsoleLoggerClient::print(const QString& message) {
   }, Qt::QueuedConnection);
 }
 
-void ConsoleLoggerClient::flush() {
+void ConsoleLoggerClient::flush()
+{
   if (!m_console) return;
 
   QMetaObject::invokeMethod(m_console, [this]()

@@ -1,4 +1,5 @@
 #include "SidePanelArea.h"
+#include "Logger.h"
 
 SidePanelArea::SidePanelArea(QWidget *parent)
   : QWidget(parent)
@@ -9,6 +10,16 @@ SidePanelArea::SidePanelArea(QWidget *parent)
 
 void SidePanelArea::setPanel(const QList<QWidget *> &widgets)
 {
+  if (!layout())
+  {
+    Logger::logError("SidePanelArea::setPanel called without a layout.");
+    return;  // Prevent crash
+  }
+  else
+  {
+    Logger::logDebug("Setting side panel widgets.");
+  }
+
   // Clear previous panel content
   QLayoutItem *child;
   while ((child = layout()->takeAt(0)) != nullptr)

@@ -12,21 +12,18 @@
 ConsoleProgram::ConsoleProgram()
 {
   m_consoleWidget = new ConsoleArea();
-
-  // Attach logging to this subprogram's console
   Logger::setClient(std::make_shared<ConsoleLoggerClient>(m_consoleWidget));
 }
 
 ConsoleProgram::ConsoleProgram(QWidget* parent)
 {
   m_consoleWidget = new ConsoleArea(parent);
-
-  // Attach logging to this subprogram's console
   Logger::setClient(std::make_shared<ConsoleLoggerClient>(m_consoleWidget));
 }
 
 ConsoleProgram::~ConsoleProgram()
 {
+  Logger::setClient(nullptr);
   delete m_consoleWidget;
 }
 
