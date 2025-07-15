@@ -92,8 +92,9 @@ void MainWindow::setupLayout()
 
   mainSplitter->addWidget(sidePanel);
   mainSplitter->addWidget(mainAreaStack);
-  mainSplitter->setStretchFactor(0, 1);
-  mainSplitter->setStretchFactor(1, 3);
+  mainSplitter->setSizes({150, 1000});
+  mainSplitter->setStretchFactor(0, 0);
+  mainSplitter->setStretchFactor(1, 1);
 
   modeTabBar = new ModeTabBar(this);
   // When user presses any tab (or closes tab) ModeTabBar emits proper signal
