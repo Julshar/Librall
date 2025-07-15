@@ -6,8 +6,10 @@
 
 #include <QPushButton>
 #include <QtConcurrent/QtConcurrent>
+#include <QFutureWatcher>
 #include <QWidget>
-
+#include <QFuture>
+#include <QObject>
 
 ConsoleProgram::ConsoleProgram()
 {
@@ -60,20 +62,38 @@ void ConsoleProgram::onDeactivated()
 
 void ConsoleProgram::runSortTest()
 {
-  QtConcurrent::run([]()
+  QFutureWatcher<void>* watcher = new QFutureWatcher<void>();
+  QObject::connect(watcher, &QFutureWatcher<void>::finished, [watcher]()
+  {
+    Logger::log("[ConsoleProgram] Sorting test completed.\n");
+    delete watcher;  // Manual cleanup required!
+  });
+
+  QFuture<void> future = QtConcurrent::run([]()
   {
     SortAlgsComp comp;
     comp.runFunctionalTest();
   });
+
+  watcher->setFuture(future);
 }
 
 void ConsoleProgram::runSortComparison()
 {
-  QtConcurrent::run([]()
+  QFutureWatcher<void>* watcher = new QFutureWatcher<void>();
+  QObject::connect(watcher, &QFutureWatcher<void>::finished, [watcher]()
+  {
+    Logger::log("[ConsoleProgram] Sorting speed test completed.\n");
+    delete watcher;  // Manual cleanup required!
+  });
+
+  QFuture<void> future = QtConcurrent::run([]()
   {
     SortAlgsComp comp;
     comp.runSpeedTest();
   });
+
+  watcher->setFuture(future);
 }
 
 void ConsoleProgram::flushConsole()
