@@ -4,6 +4,7 @@
 #include <QVector>
 #include <QPushButton>
 #include <QTimer>
+#include <QVBoxLayout>
 
 class GameOfLifeLogic;
 
@@ -17,6 +18,8 @@ public:
   void updateUI();
 
   int getRefreshInterval() { return refreshInterval; }
+  
+  void resizeBoard(int rows, int cols);
 
 public slots:
   void startSimulation();
@@ -27,8 +30,9 @@ public slots:
   void setRefreshInterval(int interval);
   
 private:
-  void setupGrid();
   void refreshCell(int x, int y);
+  void setupGrid();
+  void clearGrid();
 
   bool autoRandomize = false;
   int refreshInterval = 200; // milliseconds
@@ -37,7 +41,8 @@ private:
   GameOfLifeLogic* logic;
   QVector<QVector<QPushButton*>> cells;
 
-  QPushButton* startButton;
-  QPushButton* stopButton;
+  QVBoxLayout* mainLayout = nullptr;
+  QGridLayout* gridLayout = nullptr;
+
   QTimer* timer;
 };

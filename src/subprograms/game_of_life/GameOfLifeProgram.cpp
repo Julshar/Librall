@@ -3,6 +3,11 @@
 #include "GameOfLifeView.h"
 #include <QSlider>
 #include <QLabel>
+#include <QLineEdit>
+#include <QIntValidator>
+#include <QPushButton>
+#include <QHBoxLayout>
+#include "Logger.h"
 
 GameOfLifeProgram::GameOfLifeProgram(QWidget* parent)
 {
@@ -14,6 +19,8 @@ GameOfLifeProgram::~GameOfLifeProgram()
 {
   delete view;
   delete logic;
+  if (rowsInput) delete rowsInput;
+  if (colsInput) delete colsInput;
 }
 
 QWidget* GameOfLifeProgram::getMainWidget()
@@ -31,6 +38,8 @@ QList<QWidget*> GameOfLifeProgram::getSidePanelControls()
   QPushButton *btnClear = new QPushButton("Clear");
   QPushButton *btnRandomizeOnFrozen = new QPushButton("Auto Randomize");
   btnRandomizeOnFrozen->setCheckable(true);
+
+  QLabel *refreshSliderLabel = new QLabel(QString("Refresh rate"));
   QSlider *refreshRateSlider = new QSlider(Qt::Horizontal);
   refreshRateSlider->setRange(25, 500);
   refreshRateSlider->setValue(view->getRefreshInterval());
@@ -47,7 +56,17 @@ QList<QWidget*> GameOfLifeProgram::getSidePanelControls()
       background: #444;
   }
 )");
-  QLabel *refreshSliderLabel = new QLabel(QString("Refresh rate"));
+
+  colsInput = new QLineEdit(QString::number(logic->colCount()));
+  colsInput->setPlaceholderText("Cols");
+  colsInput->setFixedWidth(50);
+  rowsInput = new QLineEdit(QString::number(logic->rowCount()));
+  rowsInput->setPlaceholderText("Rows");
+  rowsInput->setFixedWidth(50);
+  QPushButton *resizeButton = new QPushButton("Resize");
+  QLabel *rowsCountLabel = new QLabel("Rows:");
+  QLabel *colsCountLabel = new QLabel("Cols:");
+  
 
   /*
   * TODO: Not possible currently to display label and change it dynamically
@@ -63,8 +82,27 @@ QList<QWidget*> GameOfLifeProgram::getSidePanelControls()
   QObject::connect(btnClear, &QPushButton::clicked, view, &GameOfLifeView::clearCells);
   QObject::connect(btnRandomizeOnFrozen, &QPushButton::clicked, view, &GameOfLifeView::toggleAutoRandomize);
   QObject::connect(refreshRateSlider, &QSlider::valueChanged, view, &GameOfLifeView::setRefreshInterval);
+  QObject::connect(resizeButton, &QPushButton::clicked, [this]() {
+    handleBoardResize();
+  });
 
   widgets << btnStart << btnStop << btnRandomize << btnClear << btnRandomizeOnFrozen << refreshSliderLabel
-          << refreshRateSlider;
+          << refreshRateSlider << rowsCountLabel << rowsInput << colsCountLabel << colsInput << resizeButton;
   return widgets;
+}
+
+void GameOfLifeProgram::handleBoardResize()
+{
+  bool okRows, okCols;
+  int rows = rowsInput->text().toInt(&okRows);
+  int cols = colsInput->text().toInt(&okCols);
+
+  if (okRows && okCols && rows < 100 && cols < 100)
+  {
+    view->resizeBoard(rows, cols);
+  }
+  else
+  {
+    Logger::logDebug("GameOfLifeProgram::handleBoardResize(): Failed to change board size. Invalid input size");
+  }
 }

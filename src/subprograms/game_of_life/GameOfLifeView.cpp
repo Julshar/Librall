@@ -3,28 +3,41 @@
 #include "Logger.h"
 #include "Random.h"
 #include <QGridLayout>
-#include <QVBoxLayout>
+#include <QLineEdit>
 
 GameOfLifeView::GameOfLifeView(GameOfLifeLogic* logic, QWidget* parent)
   : QWidget(parent), logic(logic)
 {
-  QVBoxLayout* mainLayout = new QVBoxLayout(this);
-  QGridLayout* gridLayout = new QGridLayout();
+  mainLayout = new QVBoxLayout(this);
+
+  setupGrid();
+
+  setLayout(mainLayout);
+
+  timer = new QTimer(this);
+  connect(timer, &QTimer::timeout, this, &GameOfLifeView::updateUI);
+}
+
+void GameOfLifeView::setupGrid()
+{
+  // Create new layout and grid
+  gridLayout = new QGridLayout();
 
   int rows = logic->rowCount();
   int cols = logic->colCount();
 
   cells.resize(rows);
-  for (int x = 0; x < rows; ++x)
+  for (int y = 0; y < rows; ++y)
   {
-    cells[x].resize(cols);
-    for (int y = 0; y < cols; ++y)
+    cells[y].resize(cols);
+    for (int x = 0; x < cols; ++x)
     {
       QPushButton* cell = new QPushButton();
       cell->setFixedSize(20, 20);
-      cell->setStyleSheet("background-color: white; border: 1px solid gray;");
-      gridLayout->addWidget(cell, x, y);
-      cells[x][y] = cell;
+      cell->setStyleSheet("background-color: black; border: 1px solid gray;");
+      gridLayout->addWidget(cell, y, x);
+      cells[y][x] = cell;
+      refreshCell(x, y);
 
       connect(cell, &QPushButton::clicked, this, [this, x, y]()
       {
@@ -35,19 +48,45 @@ GameOfLifeView::GameOfLifeView(GameOfLifeLogic* logic, QWidget* parent)
   }
 
   mainLayout->addLayout(gridLayout);
+}
 
-  timer = new QTimer(this);
-  connect(timer, &QTimer::timeout, this, &GameOfLifeView::updateUI);
+void GameOfLifeView::clearGrid()
+{
+  if (gridLayout)
+  {
+    for (auto& row : cells)
+    {
+      for (auto& cell : row)
+      {
+        cell->setParent(nullptr);
+        delete cell; // Clean up old buttons
+      }
+    }
+    mainLayout->removeItem(gridLayout);
+    delete gridLayout;
+    gridLayout = nullptr;
+    cells.clear();
+  }
+  else
+  {
+    Logger::logDebug("GameOfLifeView::clearGrid(): Grid layout already cleared or not initialized");
+  }
+}
 
-  setLayout(mainLayout);
+void GameOfLifeView::resizeBoard(int rows, int cols)
+{
+  logic->resizeBoard(rows, cols);
+  clearGrid();
+  setupGrid();
+  Logger::logDebug("Game of Life: Board resized to " + std::to_string(rows) + "x" + std::to_string(cols));
 }
 
 void GameOfLifeView::refreshCell(int x, int y)
 {
   bool alive = logic->cellState(x, y);
-  cells[x][y]->setStyleSheet(alive
-    ? "background-color: black;"
-    : "background-color: white;");
+  cells[y][x]->setStyleSheet(alive
+    ? "background-color: white;"
+    : "background-color: black;");
 }
 
 void GameOfLifeView::updateUI()
@@ -61,9 +100,9 @@ void GameOfLifeView::updateUI()
 
   int rows = logic->rowCount();
   int cols = logic->colCount();
-  for (int x = 0; x < rows; ++x)
+  for (int y = 0; y < rows; ++y)
   {
-    for (int y = 0; y < cols; ++y)
+    for (int x = 0; x < cols; ++x)
     {
       refreshCell(x, y);
     }
@@ -102,9 +141,9 @@ void GameOfLifeView::randomizeCells()
 {
   int rows = logic->rowCount();
   int cols = logic->colCount();
-  for (int x = 0; x < rows; ++x)
+  for (int y = 0; y < rows; ++y)
   {
-    for (int y = 0; y < cols; ++y)
+    for (int x = 0; x < cols; ++x)
     {
       if (Random::genBool() == true)
       {
@@ -120,9 +159,9 @@ void GameOfLifeView::clearCells()
 {
   int rows = logic->rowCount();
   int cols = logic->colCount();
-  for (int x = 0; x < rows; ++x)
+  for (int y = 0; y < rows; ++y)
   {
-    for (int y = 0; y < cols; ++y)
+    for (int x = 0; x < cols; ++x)
     {
       if (logic->cellState(x, y))
       {

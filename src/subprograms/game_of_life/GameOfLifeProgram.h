@@ -2,6 +2,7 @@
 
 #include "ISubprogram.h"
 #include "UIMode.h"
+#include <QLineEdit>
 
 class GameOfLifeLogic;
 class GameOfLifeView;
@@ -15,13 +16,12 @@ public:
   QWidget* getMainWidget();
   QList<QWidget*> getSidePanelControls() override;
 
-private slots:
-  void startSimulation();
-  void stopSimulation();
-  void randomizeCells();
-  void clearCells();
-
 private:
+  void handleBoardResize();
+  
   GameOfLifeLogic* logic;
   GameOfLifeView* view;
+
+  QLineEdit *colsInput;
+  QLineEdit *rowsInput;
 };
