@@ -73,7 +73,10 @@ QList<QWidget*> GameOfLifeProgram::getSidePanelControls()
   *       Need to find a way to create some box layout here for more flexibility
   *       or use a custom widget that can display label and slider together.
   * 
-  *       Maybe passing a layout instead of List of QWidgets? Or both?
+  *       Maybe widget creation should be moved to GameOfLifeView?
+  *       This way we can have a single widget that contains all controls
+  *       But then GameOfLifeProgram would have almost no functionality
+  *       So maybe would be better to make ISubprogram derive from QWidget?
   */
 
   QObject::connect(btnStart, &QPushButton::clicked, view, &GameOfLifeView::startSimulation);

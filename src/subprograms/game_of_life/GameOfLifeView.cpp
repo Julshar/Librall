@@ -20,7 +20,6 @@ GameOfLifeView::GameOfLifeView(GameOfLifeLogic* logic, QWidget* parent)
 
 void GameOfLifeView::setupGrid()
 {
-  // Create new layout and grid
   gridLayout = new QGridLayout();
 
   int rows = logic->rowCount();
@@ -59,7 +58,7 @@ void GameOfLifeView::clearGrid()
       for (auto& cell : row)
       {
         cell->setParent(nullptr);
-        delete cell; // Clean up old buttons
+        delete cell;
       }
     }
     mainLayout->removeItem(gridLayout);
