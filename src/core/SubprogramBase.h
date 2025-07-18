@@ -2,10 +2,15 @@
 
 #include <QWidget>
 
-class ISubprogram
+class SubprogramBase : public QObject
 {
+  Q_OBJECT
+
+protected:
+  explicit SubprogramBase(QObject* parent = nullptr) : QObject(parent) {}
+
 public:
-  virtual ~ISubprogram() = default;
+  virtual ~SubprogramBase() = default;
 
   // Returns the QWidget that should appear in the main area
   virtual QWidget* getMainWidget() = 0;

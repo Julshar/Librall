@@ -1,7 +1,7 @@
 add_library(core STATIC
   SubprogramManager.cpp
   SubprogramManager.h
-  ISubprogram.h
+  SubprogramBase.h
   UIMode.h
 )
 

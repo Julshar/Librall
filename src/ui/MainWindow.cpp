@@ -4,7 +4,7 @@
 #include "Logger.h"
 #include "ModeTabBar.h"
 
-#include "ISubprogram.h"
+#include "SubprogramBase.h"
 #include "SubprogramManager.h"
 #include "GameOfLifeProgram.h"
 #include "ConsoleProgram.h"
@@ -139,7 +139,7 @@ void MainWindow::enableMode(UIMode mode)
   // Always activate the program
   sm.activateProgram(mode);
 
-  ISubprogram *prog = sm.getProgram(mode);
+  SubprogramBase *prog = sm.getProgram(mode);
   if (prog)
   {
     // Set side panel widgets
@@ -189,7 +189,7 @@ void MainWindow::switchMode(UIMode mode)
   auto& sm = SubprogramManager::instance();
   sm.activateProgram(mode);
 
-  ISubprogram *prog = sm.getProgram(mode);
+  SubprogramBase *prog = sm.getProgram(mode);
   if (prog)
   {
     sidePanel->setPanel(prog->getSidePanelControls());

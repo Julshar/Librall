@@ -5,10 +5,10 @@
 #include <memory>
 #include "UIMode.h"
 
-class ISubprogram;
+class SubprogramBase;
 
 // Factory function for creating subprograms
-using ProgramFactory = std::function<std::unique_ptr<ISubprogram>(QWidget *parent)>;
+using ProgramFactory = std::function<std::unique_ptr<SubprogramBase>(QWidget *parent)>;
 
 class SubprogramManager
 {
@@ -17,8 +17,8 @@ public:
 
   void registerFactory(UIMode mode, ProgramFactory factory);
   bool registerProgram(UIMode mode, QWidget *parent);
-  ISubprogram* getActiveProgram();
-  ISubprogram* getProgram(UIMode mode);
+  SubprogramBase* getActiveProgram();
+  SubprogramBase* getProgram(UIMode mode);
   void closeProgram(UIMode mode);
   void activateProgram(UIMode mode);
 
@@ -27,6 +27,6 @@ private:
 
   UIMode m_activeMode = UIMode::None;
   
-  std::map<UIMode, std::unique_ptr<ISubprogram>> m_programs; // Storage for active subprograms
+  std::map<UIMode, std::unique_ptr<SubprogramBase>> m_programs; // Storage for active subprograms
   std::map<UIMode, ProgramFactory> m_factories; // Storage for subprogram factories
 };

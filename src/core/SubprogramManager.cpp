@@ -1,5 +1,5 @@
+#include "SubprogramBase.h"
 #include "SubprogramManager.h"
-#include "ISubprogram.h"
 #include "Logger.h"
 
 SubprogramManager& SubprogramManager::instance()
@@ -29,14 +29,14 @@ bool SubprogramManager::registerProgram(UIMode mode, QWidget *parent)
   return true;
 }
 
-ISubprogram* SubprogramManager::getActiveProgram()
+SubprogramBase* SubprogramManager::getActiveProgram()
 {
   auto it = m_programs.find(m_activeMode);
   return it != m_programs.end() ? it->second.get() : nullptr;
 
 }
 
-ISubprogram* SubprogramManager::getProgram(UIMode mode)
+SubprogramBase* SubprogramManager::getProgram(UIMode mode)
 {
   auto it = m_programs.find(mode);
   return it != m_programs.end() ? it->second.get() : nullptr;
@@ -48,7 +48,7 @@ void SubprogramManager::closeProgram(UIMode mode)
   if (m_activeMode == mode)
   {
     // If the active program is being closed, deactivate it first
-    if (auto* activeProgram = getActiveProgram())
+    if (SubprogramBase* activeProgram = getActiveProgram())
     {
       activeProgram->onDeactivated();
     }

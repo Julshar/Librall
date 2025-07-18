@@ -10,11 +10,23 @@
 #include "Logger.h"
 
 GameOfLifeProgram::GameOfLifeProgram(QWidget* parent)
+  : SubprogramBase(parent)
 {
   logic = new GameOfLifeLogic();
   view = new GameOfLifeView(logic, parent);
 }
 
+/*
+*  TODO: Handle destruction properly
+*  Since SubprogramBase is a QObject now and thus this class is too
+*  Once this class is destroyed all its children will be destroyed too
+*  However the View class is children to MainWindow which will most likely
+*  still be alive when this class is destroyed (closing via tab bar)
+*  The logic class is not a child of anything so it has to be deleted manually
+*
+*  However when user closes whole application, opened subprograms should be closed first
+*  So this change should be done from MainWindow destructor.
+*/
 GameOfLifeProgram::~GameOfLifeProgram()
 {
   delete view;

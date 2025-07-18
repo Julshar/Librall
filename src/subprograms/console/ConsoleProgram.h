@@ -1,12 +1,14 @@
 #pragma once
 
 #include <memory>
-#include "ISubprogram.h"
+#include "SubprogramBase.h"
 
 class ConsoleArea;
 
-class ConsoleProgram : public ISubprogram
+class ConsoleProgram : public SubprogramBase
 {
+  Q_OBJECT
+  
 public:
   ConsoleProgram();
   explicit ConsoleProgram(QWidget* parent);

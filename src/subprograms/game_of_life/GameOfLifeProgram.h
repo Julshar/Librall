@@ -1,14 +1,16 @@
 #pragma once
 
-#include "ISubprogram.h"
+#include "SubprogramBase.h"
 #include "UIMode.h"
 #include <QLineEdit>
 
 class GameOfLifeLogic;
 class GameOfLifeView;
 
-class GameOfLifeProgram : public ISubprogram
+class GameOfLifeProgram : public SubprogramBase
 {
+  Q_OBJECT
+  
 public:
   explicit GameOfLifeProgram(QWidget* parent = nullptr);
   ~GameOfLifeProgram();
