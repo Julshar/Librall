@@ -11,13 +11,6 @@
 #include <QFuture>
 #include <QObject>
 
-ConsoleProgram::ConsoleProgram()
-  : SubprogramBase(nullptr)
-{
-  m_consoleWidget = new ConsoleArea();
-  Logger::setClient(std::make_shared<ConsoleLoggerClient>(m_consoleWidget));
-}
-
 ConsoleProgram::ConsoleProgram(QWidget* parent)
   : SubprogramBase(parent)
 {

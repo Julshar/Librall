@@ -8,9 +8,8 @@ class ConsoleArea;
 class ConsoleProgram : public SubprogramBase
 {
   Q_OBJECT
-  
+
 public:
-  ConsoleProgram();
   explicit ConsoleProgram(QWidget* parent);
   ~ConsoleProgram();
 

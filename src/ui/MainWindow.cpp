@@ -170,11 +170,16 @@ void MainWindow::closeMode(UIMode mode)
   modeTabBar->removeMode(mode);
   SubprogramManager::instance().closeProgram(mode);
 
-  // TODO: This function is called when user clicks "x" on some tab.
-  // When it is done, currently displayed mode should be closed and
-  // erased from mainAreaStack. Furthermore, a neighboring mode on tab bar
-  // should be activated automatically (if there is any).
-  // Otherwise, current mode should be set to None and widgets cleared.
+  /*
+  *  TODO: This function is called when user clicks "x" on some tab.
+  *  When it is done, currently displayed mode should be closed and
+  *  erased from mainAreaStack. Furthermore, a neighboring mode on tab bar
+  *  should be activated automatically (if there is any).
+  *  Otherwise, current mode should be set to None and widgets cleared.
+  * 
+  *  TODO: Crash: When closing Game of Life with other tab opened currently
+  *  the whole program crashes.
+  */
 
   if (currentMode == mode)
   {
