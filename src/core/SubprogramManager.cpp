@@ -89,3 +89,16 @@ void SubprogramManager::activateProgram(UIMode mode)
     Logger::logError(QString("No subprogram registered for mode: %1").arg(static_cast<int>(mode)));
   }
 }
+
+std::vector<UIMode> SubprogramManager::getOpenedModes() const
+{
+  std::vector<UIMode> modes;
+  for (const auto& [mode, program] : m_programs)
+  {
+    if (program)
+    {
+      modes.push_back(mode);
+    }
+  }
+  return modes;
+}

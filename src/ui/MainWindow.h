@@ -21,6 +21,7 @@ class MainWindow : public QMainWindow
 
 public:
   MainWindow(QWidget *parent = nullptr);
+  ~MainWindow() override;
 
 private:
   void setupMenuBar();
@@ -30,6 +31,7 @@ private:
   void enableMode(UIMode mode);
   void closeMode(UIMode mode);
   void switchMode(UIMode mode);
+  void closeAllModes();
 
   void formatData(const QByteArray &data, QString &formatted) const;
 

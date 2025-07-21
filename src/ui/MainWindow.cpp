@@ -28,6 +28,11 @@ MainWindow::MainWindow(QWidget *parent)
   resize(1000, 700);
 }
 
+MainWindow::~MainWindow()
+{
+  closeAllModes();
+}
+
 void MainWindow::setupMenuBar()
 {
   QMenuBar *menuBar = new QMenuBar(this);
@@ -176,9 +181,6 @@ void MainWindow::closeMode(UIMode mode)
   *  erased from mainAreaStack. Furthermore, a neighboring mode on tab bar
   *  should be activated automatically (if there is any).
   *  Otherwise, current mode should be set to None and widgets cleared.
-  * 
-  *  TODO: Crash: When closing Game of Life with other tab opened currently
-  *  the whole program crashes.
   */
 
   if (currentMode == mode)
@@ -209,7 +211,17 @@ void MainWindow::switchMode(UIMode mode)
   currentMode = mode;
 }
 
+void MainWindow::closeAllModes()
+{
+  std::vector<UIMode> modes = SubprogramManager::instance().getOpenedModes();
+  for (UIMode mode : modes)
+  {
+    closeMode(mode);
+  }
+}
+
 // Console mode functions: chooseFile, reopenFile, formatData
+// TODO: move somewhere else
 
 void MainWindow::chooseFile()
 {

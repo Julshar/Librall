@@ -3,6 +3,7 @@
 #include <QWidget>
 #include <map>
 #include <memory>
+#include <vector>
 #include "UIMode.h"
 
 class SubprogramBase;
@@ -21,6 +22,7 @@ public:
   SubprogramBase* getProgram(UIMode mode);
   void closeProgram(UIMode mode);
   void activateProgram(UIMode mode);
+  std::vector<UIMode> getOpenedModes() const;
 
 private:
   SubprogramManager() = default;

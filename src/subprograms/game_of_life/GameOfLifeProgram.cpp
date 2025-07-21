@@ -18,11 +18,6 @@ GameOfLifeProgram::GameOfLifeProgram(QWidget* parent)
 
 GameOfLifeProgram::~GameOfLifeProgram()
 {
-  // TODO: Crash on application close
-  //
-  // m_view should only be deleted here when this program is closed from tab bar
-  // When the whole appliaction is closed, MainWindow will delete m_view
-  // Now m_view is deleted here always hence the crash when closing application with Game of Life open
   delete m_view;
   delete m_logic;
 }
