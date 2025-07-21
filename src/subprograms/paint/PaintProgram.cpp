@@ -10,30 +10,26 @@
 PaintProgram::PaintProgram(QWidget* parent)
   : SubprogramBase(parent)
 {
-  // Nothing else needed here — lazy creation of widgets below
+  canvas = new PaintCanvas(parent);
 }
 
-PaintProgram::~PaintProgram() = default;
+PaintProgram::~PaintProgram()
+{
+  delete canvas;
+}
 
 QWidget* PaintProgram::getMainWidget()
 {
-  // Lazy init pattern
-  static PaintCanvas* canvas = new PaintCanvas();
   return canvas;
 }
 
 QList<QWidget*> PaintProgram::getSidePanelControls()
 {
   QList<QWidget*> controls;
-  auto canvas = qobject_cast<PaintCanvas*>(getMainWidget());
-  if (!canvas)
-    return controls;
 
   // Color picker
   QPushButton* colorButton = new QPushButton("Choose Color");
-  
-  
-  QObject::connect(colorButton, &QPushButton::clicked, [canvas]()
+  QObject::connect(colorButton, &QPushButton::clicked, [this]()
   {
     QColor color = QColorDialog::getColor(
     canvas->palette().color(canvas->backgroundRole()),
@@ -46,19 +42,31 @@ QList<QWidget*> PaintProgram::getSidePanelControls()
 
   // Brush size slider
   QLabel* sizeLabel = new QLabel("Brush Size");
-  QSlider* sizeSlider = new QSlider(Qt::Horizontal);
-  sizeSlider->setRange(1, 30);
-  sizeSlider->setValue(2);
-  QObject::connect(sizeSlider, &QSlider::valueChanged, canvas, &PaintCanvas::setPenWidth);
+  QSlider* penSizeSlider = new QSlider(Qt::Horizontal);
+  penSizeSlider->setRange(1, 30);
+  penSizeSlider->setValue(canvas->getPenWidth());
+  penSizeSlider->setStyleSheet(R"(
+  QSlider::handle:horizontal
+  {
+      background: #6eb800;
+      width: 20px;
+      border-radius: 12px;
+  }
+  QSlider::groove:horizontal
+  {W
+      height: 12px;
+      background: #444;
+  }
+)");
+  QObject::connect(penSizeSlider, &QSlider::valueChanged, canvas, &PaintCanvas::setPenWidth);
 
-  // Zoom buttons
+  // Zoom controls
   QPushButton* zoomInBtn = new QPushButton("Zoom In");
   QPushButton* zoomOutBtn = new QPushButton("Zoom Out");
   QObject::connect(zoomInBtn, &QPushButton::clicked, canvas, &PaintCanvas::zoomIn);
   QObject::connect(zoomOutBtn, &QPushButton::clicked, canvas, &PaintCanvas::zoomOut);
 
-  // Add to list
-  controls << colorButton << sizeLabel << sizeSlider << zoomInBtn << zoomOutBtn;
+  controls << colorButton << sizeLabel << penSizeSlider << zoomInBtn << zoomOutBtn;
   return controls;
 }
 

@@ -18,5 +18,5 @@ public:
   void onDeactivated() override;
 
 private:
-  // PaintCanvas* canvas = nullptr;
+  PaintCanvas* canvas = nullptr;
 };

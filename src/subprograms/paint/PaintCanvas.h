@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DrawMode.h"
+
 #include <QWidget>
 #include <QImage>
 #include <QPoint>
@@ -16,6 +18,7 @@ public:
   void setEraserMode(bool enabled);
   void zoomIn();
   void zoomOut();
+  int getPenWidth() const { return penWidth; }
 
 protected:
   void paintEvent(QPaintEvent *event) override;
@@ -28,6 +31,7 @@ private:
   QImage canvasImage;
   QPoint lastPoint;
   QColor penColor = Qt::black;
+  DrawMode currentDrawMode = DrawMode::Brush;
   int penWidth = 2;
   bool drawing = false;
   bool eraser = false;
