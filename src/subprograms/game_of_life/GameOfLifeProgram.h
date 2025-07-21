@@ -21,9 +21,9 @@ public:
 private:
   void handleBoardResize();
   
-  GameOfLifeLogic* logic;
-  GameOfLifeView* view;
+  GameOfLifeLogic* m_logic;
+  GameOfLifeView* m_view;
 
-  QLineEdit *colsInput;
-  QLineEdit *rowsInput;
+  QLineEdit* m_colsInput;
+  QLineEdit* m_rowsInput;
 };

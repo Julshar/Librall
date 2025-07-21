@@ -12,32 +12,24 @@
 GameOfLifeProgram::GameOfLifeProgram(QWidget* parent)
   : SubprogramBase(parent)
 {
-  logic = new GameOfLifeLogic();
-  view = new GameOfLifeView(logic, parent);
+  m_logic = new GameOfLifeLogic();
+  m_view = new GameOfLifeView(m_logic, parent);
 }
 
-/*
-*  TODO: Handle destruction properly
-*  Since SubprogramBase is a QObject now and thus this class is too
-*  Once this class is destroyed all its children will be destroyed too
-*  However the View class is children to MainWindow which will most likely
-*  still be alive when this class is destroyed (closing via tab bar)
-*  The logic class is not a child of anything so it has to be deleted manually
-*
-*  However when user closes whole application, opened subprograms should be closed first
-*  So this change should be done from MainWindow destructor.
-*/
 GameOfLifeProgram::~GameOfLifeProgram()
 {
-  delete view;
-  delete logic;
-  if (rowsInput) delete rowsInput;
-  if (colsInput) delete colsInput;
+  // TODO: Crash on application close
+  //
+  // m_view should only be deleted here when this program is closed from tab bar
+  // When the whole appliaction is closed, MainWindow will delete m_view
+  // Now m_view is deleted here always hence the crash when closing application with Game of Life open
+  delete m_view;
+  delete m_logic;
 }
 
 QWidget* GameOfLifeProgram::getMainWidget()
 {
-  return view;
+  return m_view;
 }
 
 QList<QWidget*> GameOfLifeProgram::getSidePanelControls()
@@ -54,7 +46,7 @@ QList<QWidget*> GameOfLifeProgram::getSidePanelControls()
   QLabel *refreshSliderLabel = new QLabel(QString("Refresh rate"));
   QSlider *refreshRateSlider = new QSlider(Qt::Horizontal);
   refreshRateSlider->setRange(25, 500);
-  refreshRateSlider->setValue(view->getRefreshInterval());
+  refreshRateSlider->setValue(m_view->getRefreshInterval());
   refreshRateSlider->setStyleSheet(R"(
   QSlider::handle:horizontal
   {
@@ -69,52 +61,40 @@ QList<QWidget*> GameOfLifeProgram::getSidePanelControls()
   }
 )");
 
-  colsInput = new QLineEdit(QString::number(logic->colCount()));
-  colsInput->setPlaceholderText("Cols");
-  colsInput->setFixedWidth(50);
-  rowsInput = new QLineEdit(QString::number(logic->rowCount()));
-  rowsInput->setPlaceholderText("Rows");
-  rowsInput->setFixedWidth(50);
+  m_colsInput = new QLineEdit(QString::number(m_logic->colCount()));
+  m_colsInput->setPlaceholderText("Cols");
+  m_colsInput->setFixedWidth(50);
+  m_rowsInput = new QLineEdit(QString::number(m_logic->rowCount()));
+  m_rowsInput->setPlaceholderText("Rows");
+  m_rowsInput->setFixedWidth(50);
   QPushButton *resizeButton = new QPushButton("Resize");
   QLabel *rowsCountLabel = new QLabel("Rows:");
   QLabel *colsCountLabel = new QLabel("Cols:");
-  
 
-  /*
-  * TODO: Not possible currently to display label and change it dynamically
-  *       Need to find a way to create some box layout here for more flexibility
-  *       or use a custom widget that can display label and slider together.
-  * 
-  *       Maybe widget creation should be moved to GameOfLifeView?
-  *       This way we can have a single widget that contains all controls
-  *       But then GameOfLifeProgram would have almost no functionality
-  *       So maybe would be better to make ISubprogram derive from QWidget?
-  */
-
-  QObject::connect(btnStart, &QPushButton::clicked, view, &GameOfLifeView::startSimulation);
-  QObject::connect(btnStop, &QPushButton::clicked, view, &GameOfLifeView::stopSimulation);
-  QObject::connect(btnRandomize, &QPushButton::clicked, view, &GameOfLifeView::randomizeCells);
-  QObject::connect(btnClear, &QPushButton::clicked, view, &GameOfLifeView::clearCells);
-  QObject::connect(btnRandomizeOnFrozen, &QPushButton::clicked, view, &GameOfLifeView::toggleAutoRandomize);
-  QObject::connect(refreshRateSlider, &QSlider::valueChanged, view, &GameOfLifeView::setRefreshInterval);
+  QObject::connect(btnStart, &QPushButton::clicked, m_view, &GameOfLifeView::startSimulation);
+  QObject::connect(btnStop, &QPushButton::clicked, m_view, &GameOfLifeView::stopSimulation);
+  QObject::connect(btnRandomize, &QPushButton::clicked, m_view, &GameOfLifeView::randomizeCells);
+  QObject::connect(btnClear, &QPushButton::clicked, m_view, &GameOfLifeView::clearCells);
+  QObject::connect(btnRandomizeOnFrozen, &QPushButton::clicked, m_view, &GameOfLifeView::toggleAutoRandomize);
+  QObject::connect(refreshRateSlider, &QSlider::valueChanged, m_view, &GameOfLifeView::setRefreshInterval);
   QObject::connect(resizeButton, &QPushButton::clicked, [this]() {
     handleBoardResize();
   });
 
   widgets << btnStart << btnStop << btnRandomize << btnClear << btnRandomizeOnFrozen << refreshSliderLabel
-          << refreshRateSlider << rowsCountLabel << rowsInput << colsCountLabel << colsInput << resizeButton;
+          << refreshRateSlider << rowsCountLabel << m_rowsInput << colsCountLabel << m_colsInput << resizeButton;
   return widgets;
 }
 
 void GameOfLifeProgram::handleBoardResize()
 {
   bool okRows, okCols;
-  int rows = rowsInput->text().toInt(&okRows);
-  int cols = colsInput->text().toInt(&okCols);
+  int rows = m_rowsInput->text().toInt(&okRows);
+  int cols = m_colsInput->text().toInt(&okCols);
 
   if (okRows && okCols && rows < 100 && cols < 100)
   {
-    view->resizeBoard(rows, cols);
+    m_view->resizeBoard(rows, cols);
   }
   else
   {
