@@ -15,7 +15,7 @@ public:
   explicit GameOfLifeProgram(QWidget* parent = nullptr);
   ~GameOfLifeProgram();
 
-  QWidget* getMainWidget();
+  QWidget* getMainWidget() override;
   QList<QWidget*> getSidePanelControls() override;
 
 private:

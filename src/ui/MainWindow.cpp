@@ -8,6 +8,7 @@
 #include "SubprogramManager.h"
 #include "GameOfLifeProgram.h"
 #include "ConsoleProgram.h"
+#include "PaintProgram.h"
 
 #include <QSplitter>
 #include <QMenuBar>
@@ -54,6 +55,13 @@ void MainWindow::setupMenuBar()
   {
     Logger::logDebug("Initializing Game of Life...");
     enableMode(UIMode::GameOfLife);
+  });
+
+  QAction *paint = toolsMenu->addAction("Paint");
+  connect(paint, &QAction::triggered, [this]
+  {
+    Logger::logDebug("Initializing Paint...");
+    enableMode(UIMode::Paint);
   });
 
   QMenu *optionsMenu = menuBar->addMenu("Options");
@@ -128,6 +136,10 @@ void MainWindow::registerSubprogramFactories()
 
   sm.registerFactory(UIMode::GameOfLife, [](QWidget* parent) {
     return std::make_unique<GameOfLifeProgram>(parent);
+  });
+
+  sm.registerFactory(UIMode::Paint, [](QWidget* parent) {
+    return std::make_unique<PaintProgram>(parent);
   });
 }
 
@@ -292,13 +304,14 @@ void MainWindow::formatData(const QByteArray &data, QString &formatted) const
 }
 
 // Helper function to get mode name
-
 QString MainWindow::modeName(UIMode mode) const
 {
   switch (mode)
   {
     case UIMode::Console: return "Console";
     case UIMode::GameOfLife: return "Game of Life";
+    case UIMode::Paint: return "Paint";
+    case UIMode::None: return "None";
     default: return "Unknown";
   }
 }

@@ -6,5 +6,6 @@ enum class UIMode
 {
   None,
   Console,
-  GameOfLife
+  GameOfLife,
+  Paint
 };

@@ -14,6 +14,7 @@ target_link_libraries(ui
   PUBLIC console
   PUBLIC util
   PUBLIC game_of_life
+  PUBLIC paint
   PRIVATE Qt6::Widgets
 )
 

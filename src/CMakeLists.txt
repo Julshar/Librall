@@ -16,6 +16,7 @@ add_subdirectory(core)
 add_subdirectory(ui)
 add_subdirectory(subprograms/game_of_life)
 add_subdirectory(subprograms/console)
+add_subdirectory(subprograms/paint)
 # add_subdirectory(subprograms/database_tool)
 
 add_executable(${PROJECT_NAME} 
@@ -29,6 +30,7 @@ target_link_libraries(${PROJECT_NAME}
     core
     game_of_life
     console
+    paint
     # database_tool
     Qt6::Widgets
     Qt6::Sql
