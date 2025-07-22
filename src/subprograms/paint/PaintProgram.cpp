@@ -1,11 +1,17 @@
+#include "DrawMode.h"
 #include "PaintProgram.h"
 #include "PaintCanvas.h"
+#include "Logger.h"
 
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QColorDialog>
 #include <QSlider>
 #include <QLabel>
+#include <QToolButton>
+#include <QButtonGroup>
+#include <QGridLayout>
+#include <QWidget>
 
 PaintProgram::PaintProgram(QWidget* parent)
   : SubprogramBase(parent)
@@ -66,7 +72,9 @@ QList<QWidget*> PaintProgram::getSidePanelControls()
   QObject::connect(zoomInBtn, &QPushButton::clicked, canvas, &PaintCanvas::zoomIn);
   QObject::connect(zoomOutBtn, &QPushButton::clicked, canvas, &PaintCanvas::zoomOut);
 
-  controls << colorButton << sizeLabel << penSizeSlider << zoomInBtn << zoomOutBtn;
+  QWidget* toolSelectionWidget = createToolSelectionWidget(this);
+
+  controls << toolSelectionWidget << colorButton << sizeLabel << penSizeSlider << zoomInBtn << zoomOutBtn;
   return controls;
 }
 
@@ -78,4 +86,50 @@ void PaintProgram::onActivated()
 void PaintProgram::onDeactivated()
 {
   // Optional: could reset tool state or save canvas
+}
+
+QWidget* PaintProgram::createToolSelectionWidget(QObject* parentObject)
+{
+  QWidget* container = new QWidget;
+  QGridLayout* layout = new QGridLayout(container);
+
+  QButtonGroup* buttonGroup = new QButtonGroup(parentObject); // Parent should be something that lives long, e.g. PaintProgram
+
+  buttonGroup->setExclusive(true); // Only one button can be selected
+
+  QList tools = {DrawMode::Brush,
+                 DrawMode::Eraser,
+                 DrawMode::Spray,
+                 DrawMode::Fill};
+  
+  for (int i = 0; i < tools.size(); ++i)
+  {
+    QToolButton* button = new QToolButton;
+    button->setText(getDrawModeName(tools[i]));
+    button->setCheckable(true);  // Allows it to stay "pressed"
+    
+    layout->addWidget(button, i / 2, i % 2); // 2-column grid
+
+    buttonGroup->addButton(button, i); // Use the index as the button ID
+  }
+
+  QObject::connect(buttonGroup, &QButtonGroup::idClicked, this, [=](int id) {
+  DrawMode selectedTool = tools[id];
+  Logger::log("Selected tool: " + getDrawModeName(selectedTool));
+  // Update tool state here
+});
+
+  return container;
+}
+
+QString PaintProgram::getDrawModeName(DrawMode mode) const
+{
+  switch (mode)
+  {
+    case DrawMode::Brush: return "Brush";
+    case DrawMode::Eraser: return "Eraser";
+    case DrawMode::Spray: return "Spray";
+    case DrawMode::Fill: return "Fill";
+    default: return "Unknown";
+  }
 }

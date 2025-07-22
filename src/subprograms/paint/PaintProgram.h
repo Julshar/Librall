@@ -3,6 +3,7 @@
 #include "SubprogramBase.h"
 
 class PaintCanvas;
+enum class DrawMode;
 
 class PaintProgram : public SubprogramBase
 {
@@ -16,7 +17,9 @@ public:
   QList<QWidget*> getSidePanelControls() override;
   void onActivated() override;
   void onDeactivated() override;
-
-private:
+  
+  private:
+  QWidget* createToolSelectionWidget(QObject* parentObject);
+  QString getDrawModeName(DrawMode mode) const;
   PaintCanvas* canvas = nullptr;
 };

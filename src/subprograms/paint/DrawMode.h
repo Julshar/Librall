@@ -4,5 +4,6 @@ enum class DrawMode
 {
   Brush,
   Eraser,
-  Spray
+  Spray,
+  Fill
 };

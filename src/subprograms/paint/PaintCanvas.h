@@ -32,7 +32,7 @@ private:
   QPoint lastPoint;
   QColor penColor = Qt::black;
   DrawMode currentDrawMode = DrawMode::Brush;
-  int penWidth = 2;
+  int penWidth = 10;
   bool drawing = false;
   bool eraser = false;
   double zoomFactor = 1.0;
