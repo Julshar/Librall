@@ -6,6 +6,7 @@
 #include <QImage>
 #include <QPoint>
 #include <QColor>
+#include <QTimer>
 
 class PaintCanvas : public QWidget
 {
@@ -15,9 +16,10 @@ public:
   PaintCanvas(QWidget *parent = nullptr);
   void setPenColor(const QColor &color);
   void setPenWidth(int width);
-  void setEraserMode(bool enabled);
+  void setDrawMode(DrawMode mode);
   void zoomIn();
   void zoomOut();
+  void clearCanvas();
   int getPenWidth() const { return penWidth; }
 
 protected:
@@ -34,8 +36,11 @@ private:
   DrawMode currentDrawMode = DrawMode::Brush;
   int penWidth = 10;
   bool drawing = false;
-  bool eraser = false;
   double zoomFactor = 1.0;
 
+  QTimer* sprayTimer = nullptr;
+  QPoint sprayPoint;
+
   void drawLineTo(const QPoint &endPoint);
+  void sprayAt(const QPoint &point);
 };

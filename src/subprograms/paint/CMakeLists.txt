@@ -6,4 +6,4 @@ add_library(paint STATIC
 )
 
 target_include_directories(paint PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(paint core Qt6::Widgets)
+target_link_libraries(paint core util Qt6::Widgets)

@@ -12,6 +12,7 @@ public:
   static void seedWithNumber(unsigned int num);
 
   static unsigned int genValue(unsigned int min, unsigned int max);
+  static int genInt(int min, int max);
   static bool genBool();
 
   static int getMinVal();

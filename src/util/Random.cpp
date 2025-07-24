@@ -91,6 +91,35 @@ unsigned int Random::genValue(unsigned int min, unsigned int max)
   return result;
 }
 
+int Random::genInt(int min, int max)
+{
+  if (min >= max)
+  {
+    printf("Random::genInt(): WARNING! Invalid input values.\n");
+    return 0;
+  }
+
+  unsigned int unsignedMin = static_cast<unsigned int>(min);
+  unsigned int unsignedMax = static_cast<unsigned int>(max);
+
+  if (min < 0)
+  {
+    unsignedMin = 0;
+    unsignedMax = max - min;
+  }
+
+  unsigned int randomValue = genValue(unsignedMin, unsignedMax);
+
+  if (min < 0)
+  {
+    return static_cast<int>(randomValue) + min;
+  }
+  else
+  {
+    return static_cast<int>(randomValue);
+  }
+}
+
 bool Random::genBool()
 {
   std::mt19937::result_type randomNum = generator();

@@ -74,18 +74,21 @@ QList<QWidget*> PaintProgram::getSidePanelControls()
 
   QWidget* toolSelectionWidget = createToolSelectionWidget(this);
 
-  controls << toolSelectionWidget << colorButton << sizeLabel << penSizeSlider << zoomInBtn << zoomOutBtn;
+  QPushButton* clearCanvasBtn = new QPushButton("Clear");
+  QObject::connect(clearCanvasBtn, &QPushButton::clicked, canvas, &PaintCanvas::clearCanvas);
+
+  controls << toolSelectionWidget << colorButton << sizeLabel << penSizeSlider << zoomInBtn << zoomOutBtn << clearCanvasBtn;
   return controls;
 }
 
 void PaintProgram::onActivated()
 {
-  // Optional: could focus canvas or log something
+  Logger::log("[PaintProgram] Activated.");
 }
 
 void PaintProgram::onDeactivated()
 {
-  // Optional: could reset tool state or save canvas
+  Logger::log("[PaintProgram] Deactivated.");
 }
 
 QWidget* PaintProgram::createToolSelectionWidget(QObject* parentObject)
@@ -105,7 +108,7 @@ QWidget* PaintProgram::createToolSelectionWidget(QObject* parentObject)
   for (int i = 0; i < tools.size(); ++i)
   {
     QToolButton* button = new QToolButton;
-    button->setText(getDrawModeName(tools[i]));
+    button->setText(DrawModeUtils::toString(tools[i]));
     button->setCheckable(true);  // Allows it to stay "pressed"
     
     layout->addWidget(button, i / 2, i % 2); // 2-column grid
@@ -115,21 +118,9 @@ QWidget* PaintProgram::createToolSelectionWidget(QObject* parentObject)
 
   QObject::connect(buttonGroup, &QButtonGroup::idClicked, this, [=](int id) {
   DrawMode selectedTool = tools[id];
-  Logger::log("Selected tool: " + getDrawModeName(selectedTool));
-  // Update tool state here
-});
+  Logger::log("Selected tool: " + DrawModeUtils::toString(selectedTool));
+  canvas->setDrawMode(selectedTool);
+  });
 
   return container;
-}
-
-QString PaintProgram::getDrawModeName(DrawMode mode) const
-{
-  switch (mode)
-  {
-    case DrawMode::Brush: return "Brush";
-    case DrawMode::Eraser: return "Eraser";
-    case DrawMode::Spray: return "Spray";
-    case DrawMode::Fill: return "Fill";
-    default: return "Unknown";
-  }
 }

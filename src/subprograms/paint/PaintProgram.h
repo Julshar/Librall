@@ -20,6 +20,5 @@ public:
   
   private:
   QWidget* createToolSelectionWidget(QObject* parentObject);
-  QString getDrawModeName(DrawMode mode) const;
   PaintCanvas* canvas = nullptr;
 };
