@@ -111,6 +111,11 @@ void PaintCanvas::drawLineTo(const QPoint &endPoint)
 
 void PaintCanvas::sprayAt(const QPoint &point)
 {
+  Logger::logDebug(QString("Spraying at (%1, %2)").arg(point.x()).arg(point.y()));
+
+  Logger::logDebug(QString("Spray color RGBA: (%1, %2, %3, %4)")
+                 .arg(penColor.red()).arg(penColor.green()).arg(penColor.blue()).arg(penColor.alpha()));
+
   QPainter painter(&canvasImage);
   painter.setPen(Qt::NoPen);
   painter.setBrush(penColor);
@@ -125,7 +130,9 @@ void PaintCanvas::sprayAt(const QPoint &point)
     // Make sure the point is within circle radius
     if (x * x + y * y <= radius * radius)
     {
-      painter.drawPoint(point + QPoint(x, y));
+      // Logger::logDebug(QString("Spraying particle at (%1, %2)").arg(point.x() + x).arg(point.y() + y));
+
+      painter.drawEllipse(point + QPoint(x, y), 1, 1);
     }
   }
 
