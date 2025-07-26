@@ -13,6 +13,7 @@
 #include <QGridLayout>
 #include <QWidget>
 #include <QSpinBox>
+#include <QFileDialog>
 
 PaintProgram::PaintProgram(QWidget* parent)
   : SubprogramBase(parent)
@@ -81,8 +82,17 @@ QList<QWidget*> PaintProgram::getSidePanelControls()
   QPushButton* resizeCanvasButton = new QPushButton("New Canvas");
   QObject::connect(resizeCanvasButton, &QPushButton::clicked, this, &PaintProgram::handleCanvasResize);
 
+  QPushButton* exportBtn = new QPushButton("Export Image");
+  QObject::connect(exportBtn, &QPushButton::clicked, [this]() {
+    QString fileName = QFileDialog::getSaveFileName(nullptr, "Save Image", "", "PNG Files (*.png);;JPEG Files (*.jpg)");
+    if (!fileName.isEmpty())
+    {
+      canvas->saveToFile(fileName);
+    }
+  });
+
   controls << toolSelectionWidget << colorButton << sizeLabel << penSizeSlider << zoomInBtn <<
-  zoomOutBtn << clearCanvasBtn << resizeCanvasButton;
+  zoomOutBtn << clearCanvasBtn << resizeCanvasButton << exportBtn;
 
   return controls;
 }

@@ -42,8 +42,20 @@ void PaintCanvas::resizeCanvas(int width, int height)
   zoomFactor = 1.0;
   updateGeometry();
   update();
-  
+
   Logger::log(QString("Canvas resized to %1 x %2").arg(width).arg(height));
+}
+
+void PaintCanvas::saveToFile(const QString& filePath)
+{
+  if (!canvasImage.save(filePath))
+  {
+    Logger::log("Failed to save image: " + filePath);
+  }
+  else
+  {
+    Logger::log("Canvas saved to: " + filePath);
+  }
 }
 
 void PaintCanvas::zoomIn()

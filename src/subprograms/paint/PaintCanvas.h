@@ -18,6 +18,7 @@ public:
   void setPenWidth(int width);
   void setDrawMode(DrawMode mode);
   void resizeCanvas(int width, int height);
+  void saveToFile(const QString& filePath);
   void zoomIn();
   void zoomOut();
   void clearCanvas();
