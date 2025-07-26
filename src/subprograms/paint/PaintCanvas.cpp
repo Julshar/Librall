@@ -50,7 +50,8 @@ void PaintCanvas::mousePressEvent(QMouseEvent *event)
 {
   if (event->button() == Qt::LeftButton)
   {
-    lastPoint = event->pos() / zoomFactor;
+    QPointF lastPointF = (event->pos() / zoomFactor) - viewOffset;
+    lastPoint = lastPointF.toPoint();
     drawing = true;
 
     if (currentDrawMode == DrawMode::Fill)
@@ -63,13 +64,20 @@ void PaintCanvas::mousePressEvent(QMouseEvent *event)
       sprayAt(lastPoint);
     }
   }
+  else if (event->button() == Qt::MiddleButton)
+  {
+    panning = true;
+    panStartPoint = event->pos();
+    setCursor(Qt::ClosedHandCursor); // visual feedback
+  }
+    
 }
 
 void PaintCanvas::mouseMoveEvent(QMouseEvent *event)
 {
   if ((event->buttons() & Qt::LeftButton) && drawing)
   {
-    QPoint scaledPos = event->pos() / zoomFactor;
+    QPoint scaledPos = (event->pos() / zoomFactor - viewOffset).toPoint();
 
     if (currentDrawMode == DrawMode::Spray)
     {
@@ -80,6 +88,13 @@ void PaintCanvas::mouseMoveEvent(QMouseEvent *event)
       drawLineTo(scaledPos);
     }
   }
+  else if (panning)
+  {
+    QPoint delta = event->pos() - panStartPoint;
+    viewOffset += delta / zoomFactor; // Scale delta to logical coords
+    panStartPoint = event->pos(); // Update starting point
+    update();
+  }
 }
 
 void PaintCanvas::mouseReleaseEvent(QMouseEvent *event)
@@ -88,9 +103,14 @@ void PaintCanvas::mouseReleaseEvent(QMouseEvent *event)
   {
     if (currentDrawMode != DrawMode::Spray && currentDrawMode != DrawMode::Fill)
     {
-      drawLineTo(event->pos() / zoomFactor);
+      drawLineTo((event->pos() / zoomFactor - viewOffset).toPoint());
     }
     drawing = false;
+  }
+  else if (event->button() == Qt::MiddleButton)
+  {
+    panning = false;
+    setCursor(Qt::ArrowCursor);
   }
 }
 
@@ -106,8 +126,11 @@ void PaintCanvas::drawLineTo(const QPoint &endPoint)
 
   int rad = penWidth + 2;
   QRect rect = QRect(lastPoint, endPoint).normalized().adjusted(-rad, -rad, rad, rad);
-  rect = QRect(rect.topLeft() * zoomFactor, rect.size() * zoomFactor); // Apply zoom factor
-  update(rect);
+
+  QPointF topLeft = (rect.topLeft() + viewOffset) * zoomFactor;
+  QSizeF size = rect.size() * zoomFactor;
+  update(QRect(topLeft.toPoint(), size.toSize()));
+
   lastPoint = endPoint;
 }
 
@@ -136,21 +159,19 @@ void PaintCanvas::sprayAt(const QPoint &point)
   }
 
   QRect rect(point - QPoint(radius, radius), QSize(radius * 2, radius * 2));
-  rect = QRect(rect.topLeft() * zoomFactor, rect.size() * zoomFactor); // Apply zoom factor
-  update(rect);
+
+  QPointF topLeft = (rect.topLeft() + viewOffset) * zoomFactor;
+  QSizeF size = rect.size() * zoomFactor;
+  update(QRect(topLeft.toPoint(), size.toSize()));
 }
 
 void PaintCanvas::paintEvent(QPaintEvent *event)
 {
   QPainter painter(this);
   painter.scale(zoomFactor, zoomFactor);
-  QRectF sourceRect(
-    event->rect().x() / zoomFactor,
-    event->rect().y() / zoomFactor,
-    event->rect().width() / zoomFactor,
-    event->rect().height() / zoomFactor
-  );
-  painter.drawImage(sourceRect, canvasImage, sourceRect);
+  painter.translate(viewOffset); // Apply panning offset
+
+  painter.drawImage(QPoint(0, 0), canvasImage);
 }
 
 QSize PaintCanvas::sizeHint() const

@@ -42,6 +42,10 @@ private:
   QTimer* sprayTimer = nullptr;
   QPoint sprayPoint;
 
+  QPointF viewOffset = {0, 0};       // Current pan offset
+  QPoint panStartPoint;              // Where middle mouse was pressed
+  bool panning = false;              // Is user currently panning?
+
   void drawLineTo(const QPoint &endPoint);
   void sprayAt(const QPoint &point);
 };
