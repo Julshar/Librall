@@ -105,7 +105,9 @@ void PaintCanvas::drawLineTo(const QPoint &endPoint)
   painter.drawLine(lastPoint, endPoint);
 
   int rad = penWidth + 2;
-  update(QRect(lastPoint, endPoint).normalized().adjusted(-rad, -rad, rad, rad));
+  QRect rect = QRect(lastPoint, endPoint).normalized().adjusted(-rad, -rad, rad, rad);
+  rect = QRect(rect.topLeft() * zoomFactor, rect.size() * zoomFactor); // Apply zoom factor
+  update(rect);
   lastPoint = endPoint;
 }
 
@@ -120,23 +122,22 @@ void PaintCanvas::sprayAt(const QPoint &point)
   painter.setPen(Qt::NoPen);
   painter.setBrush(penColor);
 
-  const int particles = 100;
   const int radius = penWidth * 2;
 
-  for (int i = 0; i < particles; ++i)
+  for (int i = 0; i < sprayParticleCount; ++i)
   {
     int x = Random::genValue(0, radius * 2) - radius;
     int y = Random::genValue(0, radius * 2) - radius;
     // Make sure the point is within circle radius
     if (x * x + y * y <= radius * radius)
     {
-      // Logger::logDebug(QString("Spraying particle at (%1, %2)").arg(point.x() + x).arg(point.y() + y));
-
       painter.drawEllipse(point + QPoint(x, y), 1, 1);
     }
   }
 
-  update(QRect(point - QPoint(radius, radius), QSize(radius * 2, radius * 2)));
+  QRect rect(point - QPoint(radius, radius), QSize(radius * 2, radius * 2));
+  rect = QRect(rect.topLeft() * zoomFactor, rect.size() * zoomFactor); // Apply zoom factor
+  update(rect);
 }
 
 void PaintCanvas::paintEvent(QPaintEvent *event)

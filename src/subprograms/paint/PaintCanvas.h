@@ -38,6 +38,7 @@ private:
   bool drawing = false;
   double zoomFactor = 1.0;
 
+  int sprayParticleCount = 50;
   QTimer* sprayTimer = nullptr;
   QPoint sprayPoint;
 
