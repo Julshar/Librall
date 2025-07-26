@@ -32,6 +32,20 @@ void PaintCanvas::setDrawMode(DrawMode mode)
   Logger::log("Draw mode set to: " + DrawModeUtils::toString(mode));
 }
 
+void PaintCanvas::resizeCanvas(int width, int height)
+{
+  if (width <= 0 || height <= 0) return;
+
+  canvasImage = QImage(width, height, QImage::Format_RGB32);
+  canvasImage.fill(Qt::white);
+  viewOffset = {0, 0};
+  zoomFactor = 1.0;
+  updateGeometry();
+  update();
+  
+  Logger::log(QString("Canvas resized to %1 x %2").arg(width).arg(height));
+}
+
 void PaintCanvas::zoomIn()
 {
   zoomFactor *= 1.25;

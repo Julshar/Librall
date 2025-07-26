@@ -20,5 +20,8 @@ public:
   
   private:
   QWidget* createToolSelectionWidget(QObject* parentObject);
+
+  void handleCanvasResize();
+
   PaintCanvas* canvas = nullptr;
 };

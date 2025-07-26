@@ -17,6 +17,7 @@ public:
   void setPenColor(const QColor &color);
   void setPenWidth(int width);
   void setDrawMode(DrawMode mode);
+  void resizeCanvas(int width, int height);
   void zoomIn();
   void zoomOut();
   void clearCanvas();

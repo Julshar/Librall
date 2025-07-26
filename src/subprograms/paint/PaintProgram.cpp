@@ -12,6 +12,7 @@
 #include <QButtonGroup>
 #include <QGridLayout>
 #include <QWidget>
+#include <QSpinBox>
 
 PaintProgram::PaintProgram(QWidget* parent)
   : SubprogramBase(parent)
@@ -77,7 +78,12 @@ QList<QWidget*> PaintProgram::getSidePanelControls()
   QPushButton* clearCanvasBtn = new QPushButton("Clear");
   QObject::connect(clearCanvasBtn, &QPushButton::clicked, canvas, &PaintCanvas::clearCanvas);
 
-  controls << toolSelectionWidget << colorButton << sizeLabel << penSizeSlider << zoomInBtn << zoomOutBtn << clearCanvasBtn;
+  QPushButton* resizeCanvasButton = new QPushButton("New Canvas");
+  QObject::connect(resizeCanvasButton, &QPushButton::clicked, this, &PaintProgram::handleCanvasResize);
+
+  controls << toolSelectionWidget << colorButton << sizeLabel << penSizeSlider << zoomInBtn <<
+  zoomOutBtn << clearCanvasBtn << resizeCanvasButton;
+
   return controls;
 }
 
@@ -89,6 +95,43 @@ void PaintProgram::onActivated()
 void PaintProgram::onDeactivated()
 {
   Logger::log("[PaintProgram] Deactivated.");
+}
+
+void PaintProgram::handleCanvasResize()
+{
+  QDialog dialog;
+  dialog.setWindowTitle("New Canvas Size");
+
+  QVBoxLayout layout(&dialog);
+
+  QSpinBox* widthBox = new QSpinBox;
+  widthBox->setRange(100, 5000);
+  widthBox->setValue(800);
+
+  QSpinBox* heightBox = new QSpinBox;
+  heightBox->setRange(100, 5000);
+  heightBox->setValue(600);
+
+  layout.addWidget(new QLabel("Width:"));
+  layout.addWidget(widthBox);
+  layout.addWidget(new QLabel("Height:"));
+  layout.addWidget(heightBox);
+
+  QPushButton* okBtn = new QPushButton("OK");
+  QPushButton* cancelBtn = new QPushButton("Cancel");
+
+  QHBoxLayout* btnLayout = new QHBoxLayout;
+  btnLayout->addWidget(okBtn);
+  btnLayout->addWidget(cancelBtn);
+  layout.addLayout(btnLayout);
+
+  QObject::connect(okBtn, &QPushButton::clicked, [&]() {
+    canvas->resizeCanvas(widthBox->value(), heightBox->value());
+    dialog.accept();
+  });
+  QObject::connect(cancelBtn, &QPushButton::clicked, &dialog, &QDialog::reject);
+
+  dialog.exec();
 }
 
 QWidget* PaintProgram::createToolSelectionWidget(QObject* parentObject)
