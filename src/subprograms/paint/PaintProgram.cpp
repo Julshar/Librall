@@ -51,7 +51,7 @@ QList<QWidget*> PaintProgram::getSidePanelControls()
   // Brush size slider
   QLabel* sizeLabel = new QLabel("Brush Size");
   QSlider* penSizeSlider = new QSlider(Qt::Horizontal);
-  penSizeSlider->setRange(1, 30);
+  penSizeSlider->setRange(1, 100);
   penSizeSlider->setValue(canvas->getPenWidth());
   penSizeSlider->setStyleSheet(R"(
   QSlider::handle:horizontal
